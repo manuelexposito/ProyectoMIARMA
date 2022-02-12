@@ -2,6 +2,8 @@ package com.salesianostriana.miarma.controllers;
 
 import com.salesianostriana.miarma.models.auth.LoginDto;
 import com.salesianostriana.miarma.models.user.UserEntity;
+import com.salesianostriana.miarma.models.user.dto.UserDto;
+import com.salesianostriana.miarma.models.user.dto.UserDtoConverter;
 import com.salesianostriana.miarma.security.jwt.JwtProvider;
 import com.salesianostriana.miarma.security.jwt.JwtUserResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final UserDtoConverter userDtoConverter;
 
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
@@ -47,8 +50,8 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getMe(@AuthenticationPrincipal UserEntity user){
-        return ResponseEntity.ok(convertUserToJwtUserResponse(user, null));
+    public UserDto getMe(@AuthenticationPrincipal UserEntity user){
+        return userDtoConverter.convertUserEntityToGetUserDto(user);
     }
 
 

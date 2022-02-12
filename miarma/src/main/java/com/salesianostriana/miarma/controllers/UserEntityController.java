@@ -20,8 +20,9 @@ public class UserEntityController {
     private final UserEntityService userEntityService;
     private final UserDtoConverter userDtoConverter;
 
+    //TODO: Gestionar excepciones de validación
     @PostMapping("/auth/register")
-    public UserDto registerUser(@Valid @RequestBody CreateUserDto newUser) {
+    public UserDto signIn(@Valid @RequestBody CreateUserDto newUser) {
 
         UserEntity saved = userEntityService.save(newUser);
 
