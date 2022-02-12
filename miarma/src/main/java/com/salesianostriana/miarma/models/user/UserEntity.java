@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -40,8 +41,6 @@ public class UserEntity implements UserDetails {
                     )
             }
     )
-
-
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
@@ -53,16 +52,24 @@ public class UserEntity implements UserDetails {
 
     private String fullName;
 
+    private boolean isPrivate;
+
     private String avatar;
+/*
+    @Builder.Default
+    @ManyToMany
+    private List<UserEntity> followers = new ArrayList<>();
 
+    @Builder.Default
     @ManyToOne
-    private List<Post> posts;
-
+    private List<Post> posts = new ArrayList<>();
+*/
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Builder.Default
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder.Default
     private LocalDateTime lastPasswordChangeAt = LocalDateTime.now();

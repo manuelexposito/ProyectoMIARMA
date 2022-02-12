@@ -27,60 +27,53 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final UserEntityService userService;
     private final JwtProvider jwtProvider;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    //Devuelve el TOKEN a partir de la petición
+    private String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader(jwtProvider.TOKEN_HEADER);
 
-        String token = getJwtFromRequest(request);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JwtProvider.TOKEN_PREFIX))
+            return bearerToken.substring(JwtProvider.TOKEN_PREFIX.length());
+
+        return null;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
+
+        String token = this.getJwtFromRequest(request);
 
         try {
+            //Comprueba si el token es válido, y si lo es, buscamos al user
             if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
 
-                //Long userId = jwtProvider.getUserIdFromJwt(token);
                 UUID userId = jwtProvider.getUserIdFromJwt(token);
 
-                Optional<UserEntity> userEntity = userService.findById(userId);
+                Optional<UserEntity> user = userService.findById(userId);
+                //Si el user existe, obtenemos sus datos en una instancia de authenticationToken
+                if (user.isPresent()) {
 
-                if (userEntity.isPresent()) {
-                    UserEntity user = userEntity.get();
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    user,
-                                    user.getRole(),
-                                    user.getAuthorities()
-                            );
-                    authentication.setDetails(new WebAuthenticationDetails(request));
+                    UserEntity userEntity = user.get();
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                            userEntity,
+                            userEntity.getRole(),
+                            userEntity.getAuthorities()
+                    );
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
+                    authenticationToken.setDetails(new WebAuthenticationDetails(request));
+                    //Añadimos la instancia al contexto de seguridad de la petición
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
-
-                // Si no encontramos al usuario por ID, no se guarda un UsernamePasswordAuthenticationToken
-                // en el contexto de seguridad, y por tanto, el usuario no estará autenticado.
-                // Por tanto, Spring tratará de autenticarlo en el siguiente filtro, y si no lo consigue,
-                // devolverá un error.
-
             }
 
-        } catch (Exception ex) {
-            // Informar en el log
-            log.info("No se ha podido establecer el contexto de seguridad (" + ex.getMessage() + ")");
+        } catch (Exception exception) {
+            log.info("No se ha podido establecer el contexto de seguridad ( " + exception.getMessage() + ")");
         }
 
         filterChain.doFilter(request, response);
 
-
-
-
-    }
-
-    private String getJwtFromRequest(HttpServletRequest request) {
-        // Authorization: Bearer eltoken.qiemas.megusta
-        String bearerToken = request.getHeader(JwtProvider.TOKEN_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JwtProvider.TOKEN_PREFIX)) {
-            return bearerToken.substring(JwtProvider.TOKEN_PREFIX.length());
-        }
-        return null;
     }
 
 }
