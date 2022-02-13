@@ -1,9 +1,8 @@
 package com.salesianostriana.miarma.repositories;
 
 
-import com.salesianostriana.miarma.models.Post;
+import com.salesianostriana.miarma.models.post.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 

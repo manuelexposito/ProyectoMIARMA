@@ -1,4 +1,4 @@
-package com.salesianostriana.miarma.models.auth;
+package com.salesianostriana.miarma.models.user.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

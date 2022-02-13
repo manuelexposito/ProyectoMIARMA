@@ -1,6 +1,6 @@
 package com.salesianostriana.miarma.services.impl;
 
-import com.salesianostriana.miarma.models.role.UserRole;
+import com.salesianostriana.miarma.models.user.role.UserRole;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.models.user.dto.CreateUserDto;
 import com.salesianostriana.miarma.repositories.UserEntityRepository;
@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 

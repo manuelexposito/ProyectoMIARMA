@@ -1,6 +1,6 @@
 package com.salesianostriana.miarma.controllers;
 
-import com.salesianostriana.miarma.models.auth.LoginDto;
+import com.salesianostriana.miarma.models.user.auth.LoginDto;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.models.user.dto.UserDto;
 import com.salesianostriana.miarma.models.user.dto.UserDtoConverter;
