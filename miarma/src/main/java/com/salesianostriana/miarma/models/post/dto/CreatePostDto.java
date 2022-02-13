@@ -14,7 +14,5 @@ public class CreatePostDto {
     //TODO: Validadores
     private String message;
 
-    private String file;
-
 
 }

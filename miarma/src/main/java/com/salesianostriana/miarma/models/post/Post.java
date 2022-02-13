@@ -47,7 +47,7 @@ public class Post implements Serializable {
     private LocalDateTime createdAt;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserEntity owner;
 
     @Builder.Default

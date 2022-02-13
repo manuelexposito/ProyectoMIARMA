@@ -79,7 +79,7 @@ public class UserEntity implements UserDetails, Serializable {
 
 
     @Builder.Default
-    @OneToMany(mappedBy = "owner", orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Post> posts = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
