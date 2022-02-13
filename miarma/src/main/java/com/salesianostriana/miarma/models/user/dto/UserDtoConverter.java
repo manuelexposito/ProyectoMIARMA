@@ -10,6 +10,7 @@ public class UserDtoConverter {
         return UserDto.builder()
                 .avatar(user.getAvatar())
                 .fullName(user.getFullName())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole().name())
                 .build();

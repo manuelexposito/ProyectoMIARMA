@@ -46,6 +46,10 @@ public class UserEntity implements UserDetails {
 
     @NaturalId
     @Column(unique = true, updatable = false)
+    private String username;
+
+    @NaturalId
+    @Column(unique = true, updatable = false)
     private String email;
 
     private String password;

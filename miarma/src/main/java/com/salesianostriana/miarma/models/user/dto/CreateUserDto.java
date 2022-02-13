@@ -13,8 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
-//TODO: Mensaje ERRORS para las validaciones
-@FieldsValueMatch(field = "password", fieldMatch = "password2", message = "{fieldsvalue.notmatch}" )
+@FieldsValueMatch(field = "password", fieldMatch = "password2", message = "{fieldsvalue.not.match}" )
 public class CreateUserDto {
 
     @NotEmpty
@@ -33,7 +32,7 @@ public class CreateUserDto {
     private boolean isPrivate = false;
 
 
-    @StrongPassword(min = 4, max = 10, hasUpper = true, hasOther = true, hasNumber = true, hasLower = true)
+    @StrongPassword(min = 4, max = 120, hasUpper = true, hasOther = true, hasNumber = true, hasLower = true, message = "{password.not.strong}")
     private String password;
     private String password2;
 
