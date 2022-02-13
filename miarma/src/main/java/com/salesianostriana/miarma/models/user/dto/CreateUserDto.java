@@ -1,6 +1,7 @@
 package com.salesianostriana.miarma.models.user.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.salesianostriana.miarma.validation.annotations.FieldsValueMatch;
 import com.salesianostriana.miarma.validation.annotations.StrongPassword;
 import lombok.*;
@@ -28,6 +29,7 @@ public class CreateUserDto {
     private String fullname;
     @Email
     private String email;
+
 
     private LocalDateTime birthdate;
 
