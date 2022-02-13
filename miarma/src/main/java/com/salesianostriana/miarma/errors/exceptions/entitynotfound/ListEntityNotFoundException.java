@@ -1,4 +1,4 @@
-package com.salesianostriana.miarma.errors.exceptions.notfound;
+package com.salesianostriana.miarma.errors.exceptions.entitynotfound;
 
 public class ListEntityNotFoundException extends EntityNotFoundException{
 

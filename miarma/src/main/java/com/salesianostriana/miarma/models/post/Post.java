@@ -1,5 +1,6 @@
-package com.salesianostriana.miarma.models;
+package com.salesianostriana.miarma.models.post;
 
+import com.salesianostriana.miarma.models.comment.Comment;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -8,8 +9,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,10 +19,10 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Post {
+@Builder
+public class Post implements Serializable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -45,13 +47,13 @@ public class Post {
     private LocalDateTime createdAt;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserEntity owner;
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
-    private List<Comment> comments;
-
     @Builder.Default
-    private boolean isVisible = !owner.isPrivate();
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    private boolean isNotVisible;// !owner.isPrivate();
 
 }

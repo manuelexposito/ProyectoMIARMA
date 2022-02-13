@@ -1,6 +1,6 @@
 package com.salesianostriana.miarma.errors;
 
-import com.salesianostriana.miarma.errors.exceptions.notfound.EntityNotFoundException;
+import com.salesianostriana.miarma.errors.exceptions.entitynotfound.EntityNotFoundException;
 import com.salesianostriana.miarma.errors.model.ApiError;
 import com.salesianostriana.miarma.errors.model.ApiSubError;
 import com.salesianostriana.miarma.errors.model.ApiValidationSubError;

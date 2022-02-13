@@ -1,7 +1,7 @@
 package com.salesianostriana.miarma.models.user;
 
-import com.salesianostriana.miarma.models.Post;
-import com.salesianostriana.miarma.models.role.UserRole;
+import com.salesianostriana.miarma.models.post.Post;
+import com.salesianostriana.miarma.models.user.role.UserRole;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +27,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserEntity implements UserDetails {
+public class UserEntity implements UserDetails, Serializable {
 
 
     @Id
@@ -59,21 +60,34 @@ public class UserEntity implements UserDetails {
     private boolean isPrivate;
 
     private String avatar;
-/*
+
+    //Usuarios que le siguen
     @Builder.Default
     @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id"),
+            name = "user_followers")
     private List<UserEntity> followers = new ArrayList<>();
 
+    //Usuarios que sigue
     @Builder.Default
-    @ManyToOne
+    @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id"),
+            name = "user_following")
+    private List<UserEntity> following = new ArrayList<>();
+
+
+    @Builder.Default
+    @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Post> posts = new ArrayList<>();
-*/
+
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @Builder.Default
+
     @CreatedDate
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Builder.Default
     private LocalDateTime lastPasswordChangeAt = LocalDateTime.now();
@@ -89,28 +103,18 @@ public class UserEntity implements UserDetails {
     }
 
 
-    /**
-     * No vamos a gestionar la expiración de cuentas. De hacerse, se tendría que dar
-     * cuerpo a este método
-     */
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    /**
-     * No vamos a gestionar el bloqueo de cuentas. De hacerse, se tendría que dar
-     * cuerpo a este método
-     */
+
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    /**
-     * No vamos a gestionar la expiración de cuentas. De hacerse, se tendría que dar
-     * cuerpo a este método
-     */
 
     @Override
     public boolean isCredentialsNonExpired() {
@@ -118,13 +122,25 @@ public class UserEntity implements UserDetails {
     }
 
 
-    /**
-     * No vamos a gestionar el bloqueo de cuentas. De hacerse, se tendría que dar
-     * cuerpo a este método
-     */
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+    //HELPERS
+
+    public void setUserToPost(Post post){
+
+        this.getPosts().add(post);
+        post.setOwner(this);
+    }
+
+    public void removeUserFromPost(Post post){
+
+        this.getPosts().remove(post);
+        post.setOwner(null);
+
     }
 
 }
