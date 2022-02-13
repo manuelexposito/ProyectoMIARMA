@@ -55,6 +55,8 @@ public class UserEntity implements UserDetails, Serializable {
 
     private String password;
 
+    private LocalDateTime birthdate;
+
     private String fullName;
 
     private boolean isPrivate;
@@ -84,6 +86,7 @@ public class UserEntity implements UserDetails, Serializable {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
 
 
     @CreatedDate
