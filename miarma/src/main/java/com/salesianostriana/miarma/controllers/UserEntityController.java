@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -20,11 +22,11 @@ public class UserEntityController {
     private final UserEntityService userEntityService;
     private final UserDtoConverter userDtoConverter;
 
-    //TODO: Gestionar excepciones de validación
-    @PostMapping("/auth/register")
-    public UserDto signIn(@Valid @RequestBody CreateUserDto newUser) {
 
-        UserEntity saved = userEntityService.save(newUser);
+    @PostMapping("/auth/register")
+    public UserDto signIn(@Valid @RequestPart("body") CreateUserDto newUser, @RequestPart("file")MultipartFile avatar) {
+
+        UserEntity saved = userEntityService.save(newUser, avatar);
 
         return userDtoConverter.convertUserEntityToGetUserDto(saved);
     }

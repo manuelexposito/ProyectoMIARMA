@@ -1,5 +1,6 @@
 package com.salesianostriana.miarma.models.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.salesianostriana.miarma.models.post.Post;
 import com.salesianostriana.miarma.models.user.role.UserRole;
 import lombok.*;
@@ -55,6 +56,7 @@ public class UserEntity implements UserDetails, Serializable {
 
     private String password;
 
+    //TODO: Arreglar la forma en la que se muestra el formato
     private LocalDateTime birthdate;
 
     private String fullName;
@@ -88,9 +90,9 @@ public class UserEntity implements UserDetails, Serializable {
     private UserRole role;
 
 
-
+    @Builder.Default
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder.Default
     private LocalDateTime lastPasswordChangeAt = LocalDateTime.now();
@@ -102,7 +104,7 @@ public class UserEntity implements UserDetails, Serializable {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
 
