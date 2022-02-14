@@ -3,6 +3,7 @@ package com.salesianostriana.miarma.services.impl;
 import com.salesianostriana.miarma.config.StorageProperties;
 import com.salesianostriana.miarma.errors.exceptions.storage.FileNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.storage.StorageException;
+import com.salesianostriana.miarma.errors.exceptions.storage.WrongFormatException;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.utils.mediatype.MediaTypeUrlResource;
 import org.imgscalr.Scalr;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Service
@@ -60,18 +62,29 @@ public class FileSystemStorageService implements StorageService {
 
         String newFilename = "";
 
+        List<String> validMimeFormat = List.of("png", "jpg", "jpeg" , "avi", "mp4");
+
+
+
+
         try{
             if(file.isEmpty()) throw new StorageException("El fichero subido está vacío");
 
+            if(!validMimeFormat.contains(StringUtils.getFilenameExtension(filename))) throw new WrongFormatException("Hubo un error. El formato no es válido.");
+
             newFilename = filename;
 
+
+
             while(Files.exists(rootLocation.resolve(newFilename))){
+
                 String ext = StringUtils.getFilenameExtension(newFilename);
                 String name = newFilename.replace("."+ext,"");
                 String suffix = Long.toString(System.currentTimeMillis());
                 suffix = suffix.substring(suffix.length()-6);
 
                 newFilename = name + "_" + suffix + "." + ext;
+
             }
             try(InputStream inputStream = file.getInputStream()){
 
