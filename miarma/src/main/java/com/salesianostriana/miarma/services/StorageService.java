@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -25,6 +26,8 @@ public interface StorageService {
 
     void deleteAll();
 
-    BufferedImage simpleResizeImage(String uri, int targetWidth) throws Exception;
+    BufferedImage simpleResizeImage(BufferedImage originalImage, int targetWidth) throws Exception;
+
+
 
 }

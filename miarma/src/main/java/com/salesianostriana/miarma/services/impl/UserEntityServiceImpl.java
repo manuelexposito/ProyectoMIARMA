@@ -7,22 +7,27 @@ import com.salesianostriana.miarma.repositories.UserEntityRepository;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageInputStreamImpl;
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,18 +51,21 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
         String uri = null;
 
         if (!avatar.isEmpty()) {
-
             String filename = storageService.store(avatar);
+            String ext = StringUtils.getFilenameExtension(filename);
+            BufferedImage originalImage = ImageIO.read(avatar.getInputStream());
+
+            BufferedImage resized = storageService.simpleResizeImage(originalImage, 128);
+
+            OutputStream out = Files.newOutputStream(storageService.load(filename));
+
+            ImageIO.write(resized, ext, out);
 
             uri = ServletUriComponentsBuilder
                     .fromCurrentRequestUri()
                     .path("/download/")
                     .path(filename)
                     .toUriString();
-
-            BufferedImage resizedImage = storageService.simpleResizeImage(uri, 128);
-            OutputStream newImg = Files.newOutputStream(Paths.get(filename));
-
 
         }
 

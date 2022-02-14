@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -134,10 +135,7 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public BufferedImage simpleResizeImage(String uri, int targetWidth) throws Exception {
-
-        BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(uri))));
-
+    public BufferedImage simpleResizeImage(BufferedImage originalImage, int targetWidth) throws Exception {
 
         return Scalr.resize(originalImage, targetWidth);
     }
