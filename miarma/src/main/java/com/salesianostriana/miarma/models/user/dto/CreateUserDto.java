@@ -9,6 +9,7 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -31,7 +32,7 @@ public class CreateUserDto {
     private String email;
 
 
-    private LocalDateTime birthdate;
+    private LocalDate birthdate;
 
     @Builder.Default
     private boolean isPrivate = false;

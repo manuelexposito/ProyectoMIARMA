@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +58,8 @@ public class UserEntity implements UserDetails, Serializable {
     private String password;
 
     //TODO: Arreglar la forma en la que se muestra el formato
-    private LocalDateTime birthdate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate birthdate;
 
     private String fullName;
 
