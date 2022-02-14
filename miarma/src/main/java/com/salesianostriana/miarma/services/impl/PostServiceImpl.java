@@ -12,6 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -30,7 +36,6 @@ public class PostServiceImpl implements PostService {
                 .path(filename)
                 .toUriString();
 
-
         Post newPost = Post.builder()
                 .file(uri)
                 .message(post.getMessage())
@@ -43,4 +48,6 @@ public class PostServiceImpl implements PostService {
         return postRepository.save(newPost);
 
     }
+
+
 }

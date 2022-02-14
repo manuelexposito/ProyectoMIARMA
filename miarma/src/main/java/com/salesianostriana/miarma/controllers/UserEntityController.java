@@ -24,7 +24,7 @@ public class UserEntityController {
 
 
     @PostMapping("/auth/register")
-    public UserDto signIn(@Valid @RequestPart("body") CreateUserDto newUser, @RequestPart("file")MultipartFile avatar) {
+    public UserDto signIn(@Valid @RequestPart("body") CreateUserDto newUser, @RequestPart("file")MultipartFile avatar) throws Exception {
 
         UserEntity saved = userEntityService.save(newUser, avatar);
 

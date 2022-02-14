@@ -15,6 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,19 +37,30 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return this.repository.findFirstByEmail(email)
-                .orElseThrow(()-> new UsernameNotFoundException(email + " no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException(email + " no encontrado"));
     }
 
     @Override
-    public UserEntity save(CreateUserDto newUser, MultipartFile avatar) {
+    public UserEntity save(CreateUserDto newUser, MultipartFile avatar) throws Exception {
 
-        String filename = storageService.store(avatar);
+        String uri = null;
 
-        String uri = ServletUriComponentsBuilder
-                .fromCurrentRequestUri()
-                .path("/download/")
-                .path(filename)
-                .toUriString();
+        if (!avatar.isEmpty()) {
+
+            String filename = storageService.store(avatar);
+
+            uri = ServletUriComponentsBuilder
+                    .fromCurrentRequestUri()
+                    .path("/download/")
+                    .path(filename)
+                    .toUriString();
+
+            BufferedImage resizedImage = storageService.simpleResizeImage(uri, 128);
+            OutputStream newImg = Files.newOutputStream(Paths.get(filename));
+
+
+        }
+
 
         UserEntity userEntity = UserEntity.builder()
                 .password(passwordEncoder.encode(newUser.getPassword()))
