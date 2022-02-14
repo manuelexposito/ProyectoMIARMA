@@ -2,6 +2,7 @@ package com.salesianostriana.miarma.models.user.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -12,6 +13,6 @@ import java.time.LocalDateTime;
 public class UserDto {
 
     private String avatar, username, fullName, email, role;
-    private LocalDateTime birthdate;
+    private LocalDate birthdate;
 
 }

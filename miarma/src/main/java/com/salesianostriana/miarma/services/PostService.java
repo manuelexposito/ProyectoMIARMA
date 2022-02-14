@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
 
-    Post save(CreatePostDto post, MultipartFile file, UserEntity currentUser);
+    Post save(CreatePostDto post, MultipartFile file, UserEntity currentUser) ;
 
 
 

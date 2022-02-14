@@ -5,6 +5,7 @@ import com.salesianostriana.miarma.errors.exceptions.storage.FileNotFoundExcepti
 import com.salesianostriana.miarma.errors.exceptions.storage.StorageException;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.utils.mediatype.MediaTypeUrlResource;
+import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -68,6 +74,7 @@ public class FileSystemStorageService implements StorageService {
                 newFilename = name + "_" + suffix + "." + ext;
             }
             try(InputStream inputStream = file.getInputStream()){
+
                 Files.copy(inputStream, rootLocation.resolve(newFilename), StandardCopyOption.REPLACE_EXISTING);
             }
 
@@ -125,5 +132,11 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public void deleteAll() {
 
+    }
+
+    @Override
+    public BufferedImage simpleResizeImage(BufferedImage originalImage, int targetWidth) throws Exception {
+
+        return Scalr.resize(originalImage, targetWidth);
     }
 }
