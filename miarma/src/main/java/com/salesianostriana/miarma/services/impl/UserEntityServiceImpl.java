@@ -51,8 +51,11 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
         String uri = null;
 
         if (!avatar.isEmpty()) {
+
             String filename = storageService.store(avatar);
             String ext = StringUtils.getFilenameExtension(filename);
+
+
             BufferedImage originalImage = ImageIO.read(avatar.getInputStream());
 
             BufferedImage resized = storageService.simpleResizeImage(originalImage, 128);
@@ -62,7 +65,7 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
             ImageIO.write(resized, ext, out);
 
             uri = ServletUriComponentsBuilder
-                    .fromCurrentRequestUri()
+                    .fromCurrentContextPath()
                     .path("/download/")
                     .path(filename)
                     .toUriString();

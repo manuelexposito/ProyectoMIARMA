@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,14 +15,8 @@ import java.util.List;
 @Builder
 public class PostDto {
 
-    private String message;
-
-    //TODO: Validaciones para archivo
-    private String file;
-
-    private String userFullName;
-
-    private String username;
+    private UUID id;
+    private String message,file, userFullName, username;
 
 
 }

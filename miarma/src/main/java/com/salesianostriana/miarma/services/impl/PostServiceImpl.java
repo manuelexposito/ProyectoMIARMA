@@ -1,7 +1,6 @@
 package com.salesianostriana.miarma.services.impl;
 
 import com.salesianostriana.miarma.models.post.Post;
-import com.salesianostriana.miarma.models.post.dto.ConverterPostDto;
 import com.salesianostriana.miarma.models.post.dto.CreatePostDto;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.repositories.PostRepository;
@@ -12,11 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 
 @Service
 @RequiredArgsConstructor
