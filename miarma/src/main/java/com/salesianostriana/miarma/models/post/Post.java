@@ -43,6 +43,8 @@ public class Post implements Serializable {
 
     private String file;
 
+    private String resizedFile;
+
     @CreatedDate
     private LocalDateTime createdAt;
 

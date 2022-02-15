@@ -9,6 +9,7 @@ public class ConverterPostDto {
     public PostDto convertPostToPostDto(Post post){
 
         return PostDto.builder()
+                .id(post.getId())
                 .message(post.getMessage())
                 .file(post.getFile())
                 .username(post.getOwner().getUsername())

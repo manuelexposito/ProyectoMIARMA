@@ -8,9 +8,11 @@ public class UserDtoConverter {
 
     public UserDto convertUserEntityToGetUserDto(UserEntity user) {
         return UserDto.builder()
+                .id(user.getId())
                 .avatar(user.getAvatar())
                 .fullName(user.getFullName())
                 .username(user.getUsername())
+                .isPrivate(user.isPrivate())
                 .birthdate(user.getBirthdate())
                 .email(user.getEmail())
                 .role(user.getRole().name())

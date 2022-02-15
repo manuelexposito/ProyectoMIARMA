@@ -1,6 +1,7 @@
 package com.salesianostriana.miarma.errors;
 
 import com.salesianostriana.miarma.errors.exceptions.entitynotfound.EntityNotFoundException;
+import com.salesianostriana.miarma.errors.exceptions.storage.WrongFormatException;
 import com.salesianostriana.miarma.errors.model.ApiError;
 import com.salesianostriana.miarma.errors.model.ApiSubError;
 import com.salesianostriana.miarma.errors.model.ApiValidationSubError;
@@ -89,8 +90,12 @@ public class GlobalRestAdviceController extends ResponseEntityExceptionHandler {
                         .build()).collect(Collectors.toList()));
     }
 
+    @ExceptionHandler({WrongFormatException.class})
+    public ResponseEntity<?> handleWrongFormatException(WrongFormatException e, WebRequest request){
 
-    //public ResponseEntity<?> handleBadCredentialsException()
+        return buildApiError(e, HttpStatus.BAD_REQUEST, request);
+
+    }
 
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<?> handleNotFoundException(EntityNotFoundException e, WebRequest request) {

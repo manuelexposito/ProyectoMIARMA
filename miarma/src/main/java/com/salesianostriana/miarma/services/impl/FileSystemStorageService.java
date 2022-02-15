@@ -3,8 +3,13 @@ package com.salesianostriana.miarma.services.impl;
 import com.salesianostriana.miarma.config.StorageProperties;
 import com.salesianostriana.miarma.errors.exceptions.storage.FileNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.storage.StorageException;
+import com.salesianostriana.miarma.errors.exceptions.storage.WrongFormatException;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.utils.mediatype.MediaTypeUrlResource;
+import io.github.techgnious.IVCompressor;
+import io.github.techgnious.dto.IVSize;
+import io.github.techgnious.dto.VideoFormats;
+import io.github.techgnious.exception.VideoException;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -13,11 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Service
@@ -60,18 +62,29 @@ public class FileSystemStorageService implements StorageService {
 
         String newFilename = "";
 
+        List<String> validMimeFormat = List.of("png", "jpg", "jpeg" , "avi", "mp4");
+
+
+
+
         try{
             if(file.isEmpty()) throw new StorageException("El fichero subido está vacío");
 
+            if(!validMimeFormat.contains(StringUtils.getFilenameExtension(filename))) throw new WrongFormatException("Hubo un error. El formato no es válido.");
+
             newFilename = filename;
 
+
+
             while(Files.exists(rootLocation.resolve(newFilename))){
+
                 String ext = StringUtils.getFilenameExtension(newFilename);
                 String name = newFilename.replace("."+ext,"");
                 String suffix = Long.toString(System.currentTimeMillis());
                 suffix = suffix.substring(suffix.length()-6);
 
                 newFilename = name + "_" + suffix + "." + ext;
+
             }
             try(InputStream inputStream = file.getInputStream()){
 
@@ -139,4 +152,19 @@ public class FileSystemStorageService implements StorageService {
 
         return Scalr.resize(originalImage, targetWidth);
     }
+
+    @Override
+    public byte[] resizeVideo(MultipartFile file, int width, int height, String mimeFormat) throws IOException, VideoException {
+        IVCompressor compressor = new IVCompressor();
+        IVSize customRes = new IVSize();
+
+        customRes.setWidth(width);
+        customRes.setHeight(height);
+
+        return compressor.reduceVideoSizeWithCustomRes(file.getBytes(), VideoFormats.valueOf(mimeFormat.toUpperCase()), customRes);
+
+
+    }
+
+
 }

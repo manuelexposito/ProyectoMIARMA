@@ -7,6 +7,7 @@ import com.salesianostriana.miarma.models.post.dto.CreatePostDto;
 import com.salesianostriana.miarma.models.post.dto.PostDto;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.services.PostService;
+import io.github.techgnious.exception.VideoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/post")
@@ -29,7 +32,7 @@ public class PostController {
     @PostMapping("/")
     public ResponseEntity<PostDto> createPost(@RequestPart("file")MultipartFile file,
                                               @RequestPart("body")CreatePostDto newPost,
-                                              @AuthenticationPrincipal UserEntity currentUser){
+                                              @AuthenticationPrincipal UserEntity currentUser) throws Exception {
 
 
         Post savedPost = postService.save(newPost, file, currentUser);
