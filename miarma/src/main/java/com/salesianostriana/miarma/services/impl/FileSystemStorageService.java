@@ -6,6 +6,10 @@ import com.salesianostriana.miarma.errors.exceptions.storage.StorageException;
 import com.salesianostriana.miarma.errors.exceptions.storage.WrongFormatException;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.utils.mediatype.MediaTypeUrlResource;
+import io.github.techgnious.IVCompressor;
+import io.github.techgnious.dto.IVSize;
+import io.github.techgnious.dto.VideoFormats;
+import io.github.techgnious.exception.VideoException;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -148,4 +152,19 @@ public class FileSystemStorageService implements StorageService {
 
         return Scalr.resize(originalImage, targetWidth);
     }
+
+    @Override
+    public byte[] resizeVideo(MultipartFile file, int width, int height, String mimeFormat) throws IOException, VideoException {
+        IVCompressor compressor = new IVCompressor();
+        IVSize customRes = new IVSize();
+
+        customRes.setWidth(width);
+        customRes.setHeight(height);
+
+        return compressor.reduceVideoSizeWithCustomRes(file.getBytes(), VideoFormats.valueOf(mimeFormat.toUpperCase()), customRes);
+
+
+    }
+
+
 }
