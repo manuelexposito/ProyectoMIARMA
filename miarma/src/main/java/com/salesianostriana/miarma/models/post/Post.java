@@ -15,6 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+///ENTITY GRAPH
+@NamedEntityGraph(
+
+        name = "grafo-posts-user",
+        attributeNodes = {
+                @NamedAttributeNode("owner")
+        }
+
+)
+///ENTITY GRAPH
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -49,7 +60,8 @@ public class Post implements Serializable {
     private LocalDateTime createdAt;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private UserEntity owner;
 
     @Builder.Default

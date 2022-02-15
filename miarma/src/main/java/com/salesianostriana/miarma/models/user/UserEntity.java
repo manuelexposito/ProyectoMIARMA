@@ -22,6 +22,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+
+
+///ENTITY GRAPH
+@NamedEntityGraph(
+
+        name = "grafo-user-posts",
+        attributeNodes = {
+                @NamedAttributeNode("posts")
+        }
+
+)
+///ENTITY GRAPH
+
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -57,7 +70,7 @@ public class UserEntity implements UserDetails, Serializable {
 
     private String password;
 
-    //TODO: Arreglar la forma en la que se muestra el formato
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
 
@@ -85,7 +98,7 @@ public class UserEntity implements UserDetails, Serializable {
 
 
     @Builder.Default
-    @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
