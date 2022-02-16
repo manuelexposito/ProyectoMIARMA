@@ -1,6 +1,7 @@
 package com.salesianostriana.miarma.errors;
 
 import com.salesianostriana.miarma.errors.exceptions.entitynotfound.EntityNotFoundException;
+import com.salesianostriana.miarma.errors.exceptions.following.RequestAlreadySentException;
 import com.salesianostriana.miarma.errors.exceptions.storage.WrongFormatException;
 import com.salesianostriana.miarma.errors.model.ApiError;
 import com.salesianostriana.miarma.errors.model.ApiSubError;
@@ -102,6 +103,13 @@ public class GlobalRestAdviceController extends ResponseEntityExceptionHandler {
 
         return this.buildApiError(e, HttpStatus.NOT_FOUND, request);
 
+
+    }
+
+    @ExceptionHandler({RequestAlreadySentException.class})
+    public ResponseEntity<?> handleRequestAlreadySentException(RequestAlreadySentException e, WebRequest request){
+
+        return buildApiError(e, HttpStatus.resolve(409), request);
 
     }
 

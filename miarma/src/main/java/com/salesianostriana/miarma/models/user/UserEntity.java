@@ -1,6 +1,6 @@
 package com.salesianostriana.miarma.models.user;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.salesianostriana.miarma.models.follow.Follow;
 import com.salesianostriana.miarma.models.post.Post;
 import com.salesianostriana.miarma.models.user.role.UserRole;
 import lombok.*;
@@ -84,38 +84,8 @@ public class UserEntity implements UserDetails, Serializable {
 
     private String avatar;
 
-
-    // SOL 1 CREAR UNA NUEVA ENTIDAD --> SEGUIMIENTO
-    /*
-                Seguimiento tendrá User ORIGEN y User DESTINO (AMBAS @ManyToOne)
-                Ahora en User podremos tener dos @OneToMany
-     */
-
-    //SOL 2 NO TENER RELACIONES Y GESTIONAR LAS RELACIONES CON CONSULTAS, CONSULTANDO LA ENTIEDAD "SEGUIMIENTO"
-        //Para el id de seguidor y seguimiento se podría usar @EmbbededId para evitar la repetición (Mirar los ManyToMany con EXTRA)
-
-
-
-
-    /*
-    //Usuarios que le siguen
-    @Builder.Default
-    @ManyToMany
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "follower_id"),
-            name = "user_followers")
-    private List<UserEntity> followers = new ArrayList<>();
-
-    //Usuarios que sigue
-    @Builder.Default
-    @ManyToMany
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "following_id"),
-            name = "user_following")
-    private List<UserEntity> following = new ArrayList<>();
-
-*/
-    //TODO: Añadir QUERIES en UserEntityRepository para hacer la relación con Followers y Following
+    @OneToMany(mappedBy = "userFollowed")
+    private List<Follow> requests = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE , fetch = FetchType.LAZY)

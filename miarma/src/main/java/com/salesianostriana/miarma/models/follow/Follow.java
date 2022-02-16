@@ -27,4 +27,8 @@ public class Follow implements Serializable {
     @JoinColumn(name = "following_id")
     private UserEntity userFollowing;
 
+    private RequestStatus requestStatus;
+
+
+
 }

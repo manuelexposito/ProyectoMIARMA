@@ -1,0 +1,25 @@
+package com.salesianostriana.miarma.repositories;
+
+import com.salesianostriana.miarma.models.follow.Follow;
+import com.salesianostriana.miarma.models.follow.FollowPK;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface FollowRepository extends JpaRepository<Follow, FollowPK> {
+
+
+    @Query("""
+            SELECT f
+            FROM Follow f
+            WHERE f.userFollowed.id = :id1
+            AND f.userFollowing.id = :id2
+            """)
+    Optional<Follow> findFollowByMultipleId(@Param("id1") UUID idFollowed, @Param("id2") UUID idFollowing);
+
+
+}

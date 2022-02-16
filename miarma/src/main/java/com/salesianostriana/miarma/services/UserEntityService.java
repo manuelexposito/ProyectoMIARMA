@@ -13,6 +13,10 @@ public interface UserEntityService{
 
     UserEntity save(CreateUserDto newUser, MultipartFile avatar) throws Exception;
 
+    UserEntity save(UserEntity userEntity);
+
+    Optional<UserEntity> findByUsername(String username);
+
     List<UserEntity> saveAll(List<UserEntity> list);
 
     Optional<UserEntity> findById(UUID id);
