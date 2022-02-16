@@ -1,5 +1,6 @@
 package com.salesianostriana.miarma.services.impl;
 
+import com.salesianostriana.miarma.errors.exceptions.storage.FileNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.storage.WrongFormatException;
 import com.salesianostriana.miarma.models.post.Post;
 import com.salesianostriana.miarma.models.post.dto.CreatePostDto;
@@ -7,11 +8,13 @@ import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.repositories.PostRepository;
 import com.salesianostriana.miarma.services.PostService;
 import com.salesianostriana.miarma.services.StorageService;
+import com.salesianostriana.miarma.utils.mediatype.MediaTypeUrlResource;
 import io.github.techgnious.IVCompressor;
 import io.github.techgnious.dto.IVSize;
 import io.github.techgnious.dto.VideoFormats;
 import io.github.techgnious.exception.VideoException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,11 +24,16 @@ import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -41,7 +49,7 @@ public class PostServiceImpl implements PostService {
         //TODO : Arreglar la reescalada de vídeos
         String filename = storageService.store(file);
         String ext = StringUtils.getFilenameExtension(filename);
-        String fileResized =  filename.replace("."+ext,"") + "-resize." + ext;
+        String fileResized = filename.replace("." + ext, "") + "-resize." + ext;
 
         byte[] videoBytes = new byte[0];
         BufferedImage original = ImageIO.read(file.getInputStream());
@@ -52,12 +60,12 @@ public class PostServiceImpl implements PostService {
 
         if (validVidFormat.contains(ext)) {
 
-           videoBytes = storageService.resizeVideo(file, 400, 300, ext);
+            videoBytes = storageService.resizeVideo(file, 400, 300, ext);
 
-           resized = ImageIO.read(new ByteArrayInputStream(videoBytes));
+            resized = ImageIO.read(new ByteArrayInputStream(videoBytes));
 
-           ImageIO.write(resized, ext, Files.newOutputStream(storageService.load(fileResized)));
-           ImageIO.write(original, ext, Files.newOutputStream(storageService.load(filename)));
+            ImageIO.write(resized, ext, Files.newOutputStream(storageService.load(fileResized)));
+            ImageIO.write(original, ext, Files.newOutputStream(storageService.load(filename)));
 
         } else if (validImgFormat.contains(ext)) {
 
@@ -91,9 +99,27 @@ public class PostServiceImpl implements PostService {
                 .isNotVisible(currentUser.isPrivate())
                 .build();
 
-        currentUser.setUserToPost(newPost);
+        //currentUser.setUserToPost(newPost);
 
         return postRepository.save(newPost);
+
+    }
+
+    @Override
+    public void delete(UUID id) throws IOException {
+
+        try {
+            Optional<Post> post = postRepository.findById(id);
+            if (post.isPresent()) {
+
+                storageService.deleteFile(post.get().getFile());
+                postRepository.delete(post.get());
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
 
     }
 

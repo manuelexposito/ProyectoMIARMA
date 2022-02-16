@@ -14,11 +14,13 @@ import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -26,7 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -135,13 +139,27 @@ public class FileSystemStorageService implements StorageService {
 
     }
 
-    //TODO: eliminar ficheros
+
     @Override
-    public void deleteFile(String filename) {
+    public void deleteFile(String filename) throws IOException, FileNotFoundException {
+
+        String ext = StringUtils.getFilenameExtension(filename);
+        String name = Arrays.stream(filename.split("/")).filter(s -> s.contains(".")).collect(Collectors.toList()).get(0);
+        String nameWithoutExt = name.replace("."+ext,"");
+        String directoryFile = "uploads";
+
+        try{
+            Files.deleteIfExists(Paths.get(directoryFile, name));
+            Files.deleteIfExists(Paths.get(directoryFile, nameWithoutExt.concat("-resize." + ext)));
+
+
+        } catch (FileNotFoundException e){
+            throw new FileNotFoundException("No pudo encontrarse fichero para borrar");
+        }
 
 
     }
-
+    //TODO: eliminar todos los ficheros
     @Override
     public void deleteAll() {
 
