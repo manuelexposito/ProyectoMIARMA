@@ -111,6 +111,7 @@ public class UserEntity implements UserDetails, Serializable {
     private List<UserEntity> following = new ArrayList<>();
 
 */
+    //TODO: Añadir QUERIES en UserEntityRepository para hacer la relación con Followers y Following
 
     @Builder.Default
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE , fetch = FetchType.LAZY)
