@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -78,6 +79,9 @@ public class UserEntity implements UserDetails, Serializable {
 
     private boolean isPrivate;
 
+    @Length(max = 250)
+    private String biography;
+
     private String avatar;
 
 
@@ -89,6 +93,9 @@ public class UserEntity implements UserDetails, Serializable {
 
     //SOL 2 NO TENER RELACIONES Y GESTIONAR LAS RELACIONES CON CONSULTAS, CONSULTANDO LA ENTIEDAD "SEGUIMIENTO"
         //Para el id de seguidor y seguimiento se podría usar @EmbbededId para evitar la repetición (Mirar los ManyToMany con EXTRA)
+
+
+
 
     /*
     //Usuarios que le siguen
@@ -108,6 +115,7 @@ public class UserEntity implements UserDetails, Serializable {
     private List<UserEntity> following = new ArrayList<>();
 
 */
+    //TODO: Añadir QUERIES en UserEntityRepository para hacer la relación con Followers y Following
 
     @Builder.Default
     @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE , fetch = FetchType.LAZY)

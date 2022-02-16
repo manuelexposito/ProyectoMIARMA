@@ -13,10 +13,6 @@ import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<Post, UUID> {
 
-    /*
-    @EntityGraph(value = "grafo-posts-user")
-    List<Post> findByIdNotNull();
-    */
 
     @Query(value = """
             SELECT * FROM Post p
