@@ -90,6 +90,9 @@ public class UserEntity implements UserDetails, Serializable {
     //SOL 2 NO TENER RELACIONES Y GESTIONAR LAS RELACIONES CON CONSULTAS, CONSULTANDO LA ENTIEDAD "SEGUIMIENTO"
         //Para el id de seguidor y seguimiento se podría usar @EmbbededId para evitar la repetición (Mirar los ManyToMany con EXTRA)
 
+
+
+
     /*
     //Usuarios que le siguen
     @Builder.Default
