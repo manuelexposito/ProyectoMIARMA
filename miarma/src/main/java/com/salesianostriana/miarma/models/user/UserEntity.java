@@ -80,6 +80,17 @@ public class UserEntity implements UserDetails, Serializable {
 
     private String avatar;
 
+
+    // SOL 1 CREAR UNA NUEVA ENTIDAD --> SEGUIMIENTO
+    /*
+                Seguimiento tendrá User ORIGEN y User DESTINO (AMBAS @ManyToOne)
+                Ahora en User podremos tener dos @OneToMany
+     */
+
+    //SOL 2 NO TENER RELACIONES Y GESTIONAR LAS RELACIONES CON CONSULTAS, CONSULTANDO LA ENTIEDAD "SEGUIMIENTO"
+        //Para el id de seguidor y seguimiento se podría usar @EmbbededId para evitar la repetición (Mirar los ManyToMany con EXTRA)
+
+    /*
     //Usuarios que le siguen
     @Builder.Default
     @ManyToMany
@@ -96,9 +107,10 @@ public class UserEntity implements UserDetails, Serializable {
             name = "user_following")
     private List<UserEntity> following = new ArrayList<>();
 
+*/
 
     @Builder.Default
-    @OneToMany(mappedBy = "owner", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.REMOVE , fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

@@ -15,16 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-///ENTITY GRAPH
-@NamedEntityGraph(
-
-        name = "grafo-posts-user",
-        attributeNodes = {
-                @NamedAttributeNode("owner")
-        }
-
-)
-///ENTITY GRAPH
 
 @Getter
 @Setter

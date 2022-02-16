@@ -7,11 +7,12 @@ import io.github.techgnious.exception.VideoException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public interface PostService {
 
     Post save(CreatePostDto post, MultipartFile file, UserEntity currentUser) throws Exception;
 
-
+    void delete(UUID id) throws IOException;
 
 }

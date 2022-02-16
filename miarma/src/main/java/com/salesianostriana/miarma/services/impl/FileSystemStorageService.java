@@ -14,11 +14,13 @@ import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -137,7 +139,15 @@ public class FileSystemStorageService implements StorageService {
 
     //TODO: eliminar ficheros
     @Override
-    public void deleteFile(String filename) {
+    public void deleteFile(String filename) throws IOException, FileNotFoundException {
+
+        try{
+            Files.deleteIfExists(load(filename));
+
+
+        } catch (FileNotFoundException e){
+            throw new FileNotFoundException("No pudo encontrarse fichero para borrar");
+        }
 
 
     }

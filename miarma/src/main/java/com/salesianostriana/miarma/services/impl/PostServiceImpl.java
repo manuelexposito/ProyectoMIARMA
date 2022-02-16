@@ -1,5 +1,6 @@
 package com.salesianostriana.miarma.services.impl;
 
+import com.salesianostriana.miarma.errors.exceptions.storage.FileNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.storage.WrongFormatException;
 import com.salesianostriana.miarma.models.post.Post;
 import com.salesianostriana.miarma.models.post.dto.CreatePostDto;
@@ -21,11 +22,16 @@ import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -91,9 +97,33 @@ public class PostServiceImpl implements PostService {
                 .isNotVisible(currentUser.isPrivate())
                 .build();
 
-        currentUser.setUserToPost(newPost);
+        //currentUser.setUserToPost(newPost);
 
         return postRepository.save(newPost);
+
+    }
+
+    @Override
+    public void delete(UUID id) throws IOException {
+
+        try{
+            Optional<Post> post = postRepository.findById(id);
+            if(post.isPresent()){
+
+                //String name = Arrays.stream(post.get().getFile().split("/")).filter(s -> s.contains(".")).collect(Collectors.toList()).get(0);
+               // String fullRoute = "/uploads/" + name;
+                String source = post.get().getFile().replace("download", "uploads");
+                storageService.deleteFile(source);
+                postRepository.delete(post.get());
+            }
+
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+
+
+
+
 
     }
 
