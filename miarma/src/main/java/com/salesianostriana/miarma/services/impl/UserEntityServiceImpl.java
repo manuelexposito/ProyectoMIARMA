@@ -7,7 +7,6 @@ import com.salesianostriana.miarma.repositories.UserEntityRepository;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,18 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageInputStreamImpl;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.List;
 
 @Service("userDetailsService")
 @RequiredArgsConstructor
@@ -93,4 +86,9 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
         return repository.findById(id);
     }
 
+    @Override
+    public List<UserEntity> saveAll(List<UserEntity> list){
+
+        return repository.saveAll(list);
+    }
 }
