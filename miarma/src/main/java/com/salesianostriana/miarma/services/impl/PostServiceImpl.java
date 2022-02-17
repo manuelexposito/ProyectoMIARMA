@@ -127,14 +127,20 @@ public class PostServiceImpl implements PostService {
             Optional <Follow> relationship = owner.getRequests().stream()
                     .filter(follow -> follow.getUserFollowing() == currentUser).findFirst();
 
-            if(foundPost.isNotVisible() && relationship.isEmpty() ||
-                    foundPost.isNotVisible() && !relationship.get().isAccepted()) throw new PrivateProfileException("No puedes ver este post porque pertenece a un perfil privado.");
+            //if(foundPost.isNotVisible() && relationship.isEmpty() || foundPost.isNotVisible() && !relationship.get().isAccepted()) throw new PrivateProfileException("No puedes ver este post porque pertenece a un perfil privado.");
 
-            if(!foundPost.isNotVisible() ||
-                relationship.isPresent() && relationship.get().isAccepted()){
+            if(foundPost.isNotVisible()){
+
+                if (relationship.isEmpty() || !relationship.get().isAccepted()) throw new PrivateProfileException("No puedes ver este post porque pertenece a un perfil privado.");
+
+                if (relationship.get().isAccepted()) return foundPost;
+
+            } else{
+
                 return foundPost;
-
             }
+
+
 
         } else throw new EntityNotFoundException("No se encontró la publicación");
 
