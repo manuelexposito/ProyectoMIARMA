@@ -16,6 +16,8 @@ public interface PostService {
 
     List<Post> getPublicPosts();
 
+    Post getOnePost(UUID id, UserEntity currentUser);
+
     void delete(UUID id) throws IOException;
 
 }

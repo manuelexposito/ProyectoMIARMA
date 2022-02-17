@@ -66,6 +66,14 @@ public class PostController {
 
     }
     //TODO: GET ONE POST
+
+    @GetMapping("/{id}")
+    public PostDto getOnePost(@PathVariable UUID id,@AuthenticationPrincipal UserEntity currentUser){
+
+        Post foundPost = postService.getOnePost(id, currentUser);
+        return converterPostDto.convertPostToPostDto(foundPost);
+
+    }
     //TODO: GET SOMEONE'S POST
     //TODO: GET MY POSTS (logged)
 
