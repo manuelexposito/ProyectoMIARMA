@@ -21,6 +21,8 @@ public interface PostService {
 
     Post getOnePost(UUID id, UserEntity currentUser);
 
+    Post editPost(UUID id, MultipartFile file ,UserEntity currentUser, CreatePostDto editPost) throws Exception;
+
     void delete(UUID id) throws IOException;
 
 }
