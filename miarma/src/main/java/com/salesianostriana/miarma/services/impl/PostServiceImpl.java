@@ -136,7 +136,6 @@ public class PostServiceImpl implements PostService {
 
             if(!file.isEmpty()){
                 storageService.deleteFile(post.get().getFile());
-                storageService.deleteFile(post.get().getResizedFile());
 
                 filename = storageService.store(file);
                 ext = StringUtils.getFilenameExtension(filename);

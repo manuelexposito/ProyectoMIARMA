@@ -137,6 +137,50 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
     }
 
     @Override
+    public UserEntity edit(CreateUserDto edit, MultipartFile avatar, UserEntity currentUser) throws Exception {
+
+        String uri = currentUser.getAvatar();
+
+        if (!avatar.isEmpty()) {
+
+            storageService.deleteFile(currentUser.getAvatar());
+            String filename = storageService.store(avatar);
+            String ext = StringUtils.getFilenameExtension(filename);
+
+
+            BufferedImage originalImage = ImageIO.read(avatar.getInputStream());
+
+            BufferedImage resized = storageService.simpleResizeImage(originalImage, 128);
+
+            OutputStream out = Files.newOutputStream(storageService.load(filename));
+
+            ImageIO.write(resized, ext, out);
+
+            uri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/download/")
+                    .path(filename)
+                    .toUriString();
+
+        }
+
+
+        currentUser = UserEntity.builder()
+                .id(currentUser.getId())
+                .password(passwordEncoder.encode(edit.getPassword()))
+                .avatar(uri)
+                .birthdate(edit.getBirthdate())
+                .username(edit.getUsername())
+                .fullName(edit.getFullname())
+                .isPrivate(edit.isPrivate())
+                .email(edit.getEmail())
+                .role(UserRole.USER_ROLE)
+                .build();
+
+        return repository.save(currentUser);
+    }
+
+    @Override
     public Optional<UserEntity> findByUsername(String username) {
         return repository.findFirstByUsername(username);
     }

@@ -18,6 +18,8 @@ public interface UserEntityService{
 
     UserEntity getUserProfile(UUID id, UserEntity currentUser);
 
+    UserEntity edit(CreateUserDto edit, MultipartFile avatar, UserEntity currentUser) throws Exception;
+
     Optional<UserEntity> findByUsername(String username);
 
     List<UserEntity> saveAll(List<UserEntity> list);
