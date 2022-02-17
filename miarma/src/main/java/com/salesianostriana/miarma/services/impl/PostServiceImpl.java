@@ -9,6 +9,7 @@ import com.salesianostriana.miarma.models.post.Post;
 import com.salesianostriana.miarma.models.post.dto.CreatePostDto;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.repositories.PostRepository;
+import com.salesianostriana.miarma.repositories.UserEntityRepository;
 import com.salesianostriana.miarma.services.PostService;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.utils.mediatype.MediaTypeUrlResource;
@@ -45,6 +46,7 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final StorageService storageService;
+    private final UserEntityRepository userRepository;
 
     @Override
     public Post save(CreatePostDto post, MultipartFile file, UserEntity currentUser) throws Exception {
@@ -112,6 +114,31 @@ public class PostServiceImpl implements PostService {
         return postRepository.findAll().stream()
                 .filter(post -> !post.isNotVisible())
                 .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<Post> getPostsByUsername(String username, UserEntity currentUser) {
+
+        Optional<UserEntity> user = userRepository.findFirstByUsername(username);
+
+        if(user.isPresent()){
+
+            UserEntity foundUser = user.get();
+            Optional<Follow> optFollow = foundUser.getRequests().stream()
+                    .filter(f -> f.getUserFollowing().equals(currentUser)).findFirst();
+
+            if(foundUser.isPrivate() && optFollow.isPresent() || !foundUser.isPrivate())
+            {
+                return postRepository.findAllPostByOwner(foundUser.getId());
+
+            } else throw new PrivateProfileException("No puede ver las publicaciones de este perfil porque es privado.");
+
+
+
+
+        } else throw new EntityNotFoundException("No se encontró al usuario");
+
 
     }
 

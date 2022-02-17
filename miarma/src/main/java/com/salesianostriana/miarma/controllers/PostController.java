@@ -75,6 +75,16 @@ public class PostController {
 
     }
     //TODO: GET SOMEONE'S POST
+    @GetMapping("/all/{username}")
+    public List<PostDto> getUsersPost(@PathVariable String username, @AuthenticationPrincipal UserEntity currentUser){
+
+        return postService.getPostsByUsername(username, currentUser)
+                .stream().map(converterPostDto::convertPostToPostDto)
+                .collect(Collectors.toList());
+
+
+    }
+
     //TODO: GET MY POSTS (logged)
 
 }
