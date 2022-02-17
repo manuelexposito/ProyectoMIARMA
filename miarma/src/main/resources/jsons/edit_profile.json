@@ -1,0 +1,9 @@
+{
+  "username" : "manexp",
+  "birthdate" : "1997-04-26",
+  "fullname" : "Mi nuevo nombre",
+  "email" : "manuelexposito4d@gmail.com",
+  "isPrivate" : false,
+  "password" : "MiSuperContraseña",
+  "password2" : "MiSuperContraseña"
+}
