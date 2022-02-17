@@ -9,6 +9,7 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -22,7 +23,7 @@ public class CreateUserDto {
     @NotEmpty
     @NotNull
     private String username;
-    //TODO: Hacer la subida de avatar con fichero
+
     private String avatar;
 
     @NotEmpty
@@ -31,7 +32,7 @@ public class CreateUserDto {
     @Email
     private String email;
 
-
+    @Past
     private LocalDate birthdate;
 
     @Builder.Default

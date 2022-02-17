@@ -26,16 +26,6 @@ import java.util.UUID;
 
 
 
-///ENTITY GRAPH
-@NamedEntityGraph(
-
-        name = "grafo-user-posts",
-        attributeNodes = {
-                @NamedAttributeNode("posts")
-        }
-
-)
-///ENTITY GRAPH
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -84,7 +74,8 @@ public class UserEntity implements UserDetails, Serializable {
 
     private String avatar;
 
-    @OneToMany(mappedBy = "userFollowed")
+    //TODO: Solucionar el tipo de fetch con una query o entity graph para evitar el uso de EAGER.
+    @OneToMany(mappedBy = "userFollowed", fetch = FetchType.EAGER)
     private List<Follow> requests = new ArrayList<>();
 
     @Builder.Default

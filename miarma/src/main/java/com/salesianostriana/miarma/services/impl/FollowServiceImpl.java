@@ -1,6 +1,9 @@
 package com.salesianostriana.miarma.services.impl;
 
+import com.salesianostriana.miarma.errors.exceptions.entitynotfound.EntityNotFoundException;
+import com.salesianostriana.miarma.errors.exceptions.entitynotfound.ListEntityNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.entitynotfound.SingleEntityNotFoundException;
+import com.salesianostriana.miarma.errors.exceptions.following.FollowingSelfException;
 import com.salesianostriana.miarma.models.follow.Follow;
 import com.salesianostriana.miarma.models.follow.FollowPK;
 import com.salesianostriana.miarma.models.user.UserEntity;
@@ -10,7 +13,9 @@ import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +25,7 @@ public class FollowServiceImpl implements FollowService {
     private final UserEntityService userService;
 
     @Override
-    public Follow sendRequest(UserEntity currentUser, String username){
+    public Follow sendRequest(UserEntity currentUser, String username) {
 
         Optional<UserEntity> userRequested = userService.findByUsername(username);
         UserEntity foundUser = new UserEntity();
@@ -31,20 +36,21 @@ public class FollowServiceImpl implements FollowService {
 
 
         //Buscamos al usuario, y setea los IDs si lo encuentra
-        if (userRequested.isPresent()){
+        if (userRequested.isPresent()) {
             foundUser = userRequested.get();
             followRequest.setUserFollowed(foundUser);
+            //TODO: Gestionar que un usuario no pueda seguirse a sí mismo
 
-        } else{
+        } else {
             throw new SingleEntityNotFoundException(UserEntity.class);
         }
+
 
         //Buscamos si existe esta relación FOLLOW
 
 
-
         //Si la peticion no existe, la creamos y la dejamos en "pendiente" seteandola en FALSE
-        if(!foundUser.getRequests().contains(followRequest)){
+        if (!foundUser.getRequests().contains(followRequest)) {
 
             followRequest.setAccepted(false);
             foundUser.getRequests().add(followRequest);
@@ -59,13 +65,20 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public Follow save(Follow followRequest, UserEntity currentUser) {
+    public Follow save(UUID followerId, UserEntity currentUser) {
 
-        followRequest = Follow.builder()
-                .isAccepted(true)
-                .build();
+        Optional<Follow> follower = followRepository.findFollowByMultipleId(currentUser.getId(), followerId);
+        Follow followRequest;
 
-        return followRepository.save(followRequest);
+        if(follower.isPresent() ){
+            followRequest = follower.get();
+            followRequest.setAccepted(true);
+            return followRepository.save(followRequest);
+
+        } else{
+            throw new EntityNotFoundException("No pudo encontrase ninguna petición con ese usuario.");
+        }
+
     }
 
 
@@ -73,4 +86,13 @@ public class FollowServiceImpl implements FollowService {
     public void delete(FollowPK id) {
 
     }
+
+    @Override
+    public List<Follow> getPetitionsList(UserEntity currentUser) {
+
+        return currentUser.getRequests();
+
+    }
+
 }
+

@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/follow")
@@ -28,6 +28,20 @@ public class FollowController {
 
     }
 
+    @GetMapping("/list")
+    public List<Follow> getFollowList(@AuthenticationPrincipal UserEntity currentUser){
+
+        return followService.getPetitionsList(currentUser);
+
+    }
+
+    @PostMapping("/accept/{id}")
+    public ResponseEntity<?> acceptFollowRequest(@PathVariable("id")UUID id, @AuthenticationPrincipal UserEntity currentUser){
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(followService.save(id, currentUser));
+
+
+    }
 
 
 }
