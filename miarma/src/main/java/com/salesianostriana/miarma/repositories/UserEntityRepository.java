@@ -1,5 +1,6 @@
 package com.salesianostriana.miarma.repositories;
 
+import com.salesianostriana.miarma.models.follow.Follow;
 import com.salesianostriana.miarma.models.post.Post;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import org.apache.catalina.User;
@@ -15,8 +16,6 @@ import java.util.UUID;
 public interface UserEntityRepository extends JpaRepository<UserEntity, UUID> {
 
 
-    @EntityGraph(value = "grafo-user-posts")
-    List<UserEntity> findByIdNotNull();
 
 
     Optional<UserEntity> findFirstByUsername(String username);

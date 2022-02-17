@@ -1,6 +1,7 @@
 package com.salesianostriana.miarma;
 
 import com.salesianostriana.miarma.models.user.UserEntity;
+import com.salesianostriana.miarma.models.user.role.UserRole;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,7 @@ public class InitData {
                     .isPrivate(false)
                     .password("$2a$10$DnV3dnO9kUqltqxZ8Ef8uOhq93G1NTz/MuM8C6X0SljpIUue8qcSe")
                     .username("nerevelaz1982")
+                    .role(UserRole.USER_ROLE)
                     .build(),
 
                 UserEntity.builder()
@@ -42,6 +44,7 @@ public class InitData {
                         .isPrivate(true)
                         .password("$2a$10$DnV3dnO9kUqltqxZ8Ef8uOhq93G1NTz/MuM8C6X0SljpIUue8qcSe")
                         .username("ismavalxXx")
+                        .role(UserRole.USER_ROLE)
                         .build(),
 
                 UserEntity.builder()
@@ -53,6 +56,7 @@ public class InitData {
                         .isPrivate(true)
                         .password("$2a$10$DnV3dnO9kUqltqxZ8Ef8uOhq93G1NTz/MuM8C6X0SljpIUue8qcSe")
                         .username("darive74")
+                        .role(UserRole.USER_ROLE)
                         .build(),
 
                 UserEntity.builder()
@@ -64,6 +68,7 @@ public class InitData {
                         .isPrivate(false)
                         .password("$2a$10$DnV3dnO9kUqltqxZ8Ef8uOhq93G1NTz/MuM8C6X0SljpIUue8qcSe")
                         .username("cafaco85")
+                        .role(UserRole.USER_ROLE)
                         .build()
 
         );
