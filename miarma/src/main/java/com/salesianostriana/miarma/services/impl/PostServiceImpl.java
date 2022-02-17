@@ -143,6 +143,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> getMyPosts(UserEntity currentUser) {
+        return postRepository.findAllPostByOwner(currentUser.getId());
+    }
+
+    @Override
     public Post getOnePost(UUID id, UserEntity currentUser) {
 
         Optional<Post> post = postRepository.findById(id);
