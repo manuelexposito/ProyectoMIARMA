@@ -16,9 +16,10 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     @Query(value = """
             SELECT * FROM Post p
-            JOIN UserEntity u on (u.id = p.owner.id)
+            JOIN User_Entity u on (u.id = p.user_id)
+            WHERE p.user_id = :id
             """, nativeQuery = true)
-    List<Post> findAllPostByOwnerId();
+    List<Post> findAllPostByOwner(@Param("id") UUID id);
 
 
 }
