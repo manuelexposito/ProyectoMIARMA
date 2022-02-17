@@ -1,7 +1,10 @@
 package com.salesianostriana.miarma.services.impl;
 
+import com.salesianostriana.miarma.errors.exceptions.entitynotfound.EntityNotFoundException;
+import com.salesianostriana.miarma.errors.exceptions.following.PrivateProfileException;
 import com.salesianostriana.miarma.errors.exceptions.storage.FileNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.storage.WrongFormatException;
+import com.salesianostriana.miarma.models.follow.Follow;
 import com.salesianostriana.miarma.models.post.Post;
 import com.salesianostriana.miarma.models.post.dto.CreatePostDto;
 import com.salesianostriana.miarma.models.user.UserEntity;
@@ -99,8 +102,6 @@ public class PostServiceImpl implements PostService {
                 .isNotVisible(currentUser.isPrivate())
                 .build();
 
-        //currentUser.setUserToPost(newPost);
-
         return postRepository.save(newPost);
 
     }
@@ -108,8 +109,42 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getPublicPosts() {
 
-        return postRepository.findAll().stream().filter(post -> !post.isNotVisible()).collect(Collectors.toList());
+        return postRepository.findAll().stream()
+                .filter(post -> !post.isNotVisible())
+                .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public Post getOnePost(UUID id, UserEntity currentUser) {
+
+        Optional<Post> post = postRepository.findById(id);
+
+        if(post.isPresent()){
+
+            Post foundPost = post.get();
+            UserEntity owner = foundPost.getOwner();
+            Optional <Follow> relationship = owner.getRequests().stream()
+                    .filter(follow -> follow.getUserFollowing() == currentUser).findFirst();
+
+            //if(foundPost.isNotVisible() && relationship.isEmpty() || foundPost.isNotVisible() && !relationship.get().isAccepted()) throw new PrivateProfileException("No puedes ver este post porque pertenece a un perfil privado.");
+
+            if(foundPost.isNotVisible()){
+
+                if (relationship.isEmpty() || !relationship.get().isAccepted()) throw new PrivateProfileException("No puedes ver este post porque pertenece a un perfil privado.");
+
+                if (relationship.get().isAccepted()) return foundPost;
+
+            } else{
+
+                return foundPost;
+            }
+
+
+
+        } else throw new EntityNotFoundException("No se encontró la publicación");
+
+        return null;
     }
 
     @Override
