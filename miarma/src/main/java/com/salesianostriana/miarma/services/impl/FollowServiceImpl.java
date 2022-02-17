@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,6 +90,7 @@ public class FollowServiceImpl implements FollowService {
         Follow followRequest;
 
         if(follower.isPresent() ){
+            //Eliminamos la petición de los "request" del usuario y la borramos de la base de datos.
             followRequest = follower.get();
             currentUser.getRequests().remove(followRequest);
             userService.save(currentUser);
@@ -97,15 +99,15 @@ public class FollowServiceImpl implements FollowService {
         } else{
             throw new EntityNotFoundException("No pudo encontrase ninguna petición con ese usuario.");
         }
-
-
-
     }
 
     @Override
     public List<Follow> getPetitionsList(UserEntity currentUser) {
 
-        return currentUser.getRequests();
+        //Buscamos todas las peticiones que no hayan sido aceptadas todavía
+        return currentUser.getRequests().stream()
+                .filter(request -> !request.isAccepted())
+                .collect(Collectors.toList());
 
     }
 
