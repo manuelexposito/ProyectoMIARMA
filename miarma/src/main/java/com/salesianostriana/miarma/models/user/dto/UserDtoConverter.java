@@ -14,6 +14,7 @@ public class UserDtoConverter {
                 .username(user.getUsername())
                 .isPrivate(user.isPrivate())
                 .birthdate(user.getBirthdate())
+                .bio(user.getBiography())
                 .email(user.getEmail())
                 .role(user.getRole().name())
                 .build();

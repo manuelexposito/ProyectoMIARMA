@@ -7,13 +7,12 @@ import com.salesianostriana.miarma.models.user.dto.UserDtoConverter;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,10 +30,14 @@ public class UserEntityController {
         return userDtoConverter.convertUserEntityToGetUserDto(saved);
     }
 
-    //TODO: GET ONE USER PROFILE
-    //TODO: EDIT MY PROFILE
-    //TODO: SEND FOLLOW PETITION
-    //TODO: ACCEPT FOLLOW
-    //TODO: DECLINE FOLLOW
 
+    @GetMapping("/profile/{id}")
+    public UserDto getUserProfile(@PathVariable UUID id, @AuthenticationPrincipal UserEntity currentUser){
+
+        UserEntity user = userEntityService.getUserProfile(id, currentUser);
+
+        return userDtoConverter.convertUserEntityToGetUserDto(user);
+
+    }
+    //TODO: EDIT MY PROFILE
 }

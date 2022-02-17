@@ -78,9 +78,17 @@ public class InitData {
 
         userService.saveAll(users);
 
+        //Petición del usuario ismavalxXx a nerevelaz1982
         Follow follow = followService.sendRequest(users.get(1), "nerevelaz1982");
         userService.save(users.get(1));
         followRepository.save(follow);
+
+        //Relación de seguimiento entre cafaco85(cuenta publica seguidora)
+        // y darive74(cuenta privada que acepta el seguimiento)
+        followService.sendRequest(users.get(3), "darive74");
+        followService.save(users.get(3).getId(), users.get(2));
+
+
 
     }
 
