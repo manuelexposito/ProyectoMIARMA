@@ -83,7 +83,22 @@ public class FollowServiceImpl implements FollowService {
 
 
     @Override
-    public void delete(FollowPK id) {
+    public void delete(UUID followerId, UserEntity currentUser) {
+
+        Optional<Follow> follower = followRepository.findFollowByMultipleId(currentUser.getId(), followerId);
+        Follow followRequest;
+
+        if(follower.isPresent() ){
+            followRequest = follower.get();
+            currentUser.getRequests().remove(followRequest);
+            userService.save(currentUser);
+            followRepository.delete(followRequest);
+
+        } else{
+            throw new EntityNotFoundException("No pudo encontrase ninguna petición con ese usuario.");
+        }
+
+
 
     }
 

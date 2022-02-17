@@ -43,5 +43,13 @@ public class FollowController {
 
     }
 
+    @DeleteMapping("/decline/{id}")
+    public ResponseEntity<?> declineFollowRequest(@PathVariable("id")UUID id, @AuthenticationPrincipal UserEntity currentUser){
+
+        followService.delete(id, currentUser);
+        return ResponseEntity.noContent().build();
+
+    }
+
 
 }
