@@ -109,6 +109,68 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Post editPost(UUID id, MultipartFile file, UserEntity currentUser, CreatePostDto editPost) throws Exception {
+        String filename;
+        String ext;
+        String fileResized;
+        BufferedImage original;
+        BufferedImage resized;
+        String originalUri;
+        String resizedUri;
+
+        Optional<Post> post = postRepository.findById(id);
+
+        if(post.isPresent()){
+
+            Post foundPost = post.get();
+            originalUri = foundPost.getFile();
+            resizedUri = foundPost.getResizedFile();
+
+            foundPost = Post.builder()
+                    .id(id)
+                    .message(editPost.getMessage())
+                    .owner(currentUser)
+                    .file(originalUri)
+                    .resizedFile(resizedUri)
+                    .build();
+
+            if(!file.isEmpty()){
+                storageService.deleteFile(post.get().getFile());
+                storageService.deleteFile(post.get().getResizedFile());
+
+                filename = storageService.store(file);
+                ext = StringUtils.getFilenameExtension(filename);
+                fileResized = filename.replace("." + ext, "") + "-resize." + ext;
+                original = ImageIO.read(file.getInputStream());
+
+                resized = storageService.simpleResizeImage(original, 128);
+
+                ImageIO.write(resized, ext, Files.newOutputStream(storageService.load(fileResized)));
+                ImageIO.write(original, ext, Files.newOutputStream(storageService.load(filename)));
+
+                originalUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/download/")
+                        .path(filename)
+                        .toUriString();
+
+                resizedUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/download/")
+                        .path(fileResized)
+                        .toUriString();
+
+                foundPost.setFile(originalUri);
+                foundPost.setResizedFile(resizedUri);
+            }
+
+            return postRepository.save(foundPost);
+        } throw new EntityNotFoundException("No se encontró la publicación");
+
+
+    }
+
+    @Override
     public List<Post> getPublicPosts() {
 
         return postRepository.findAll().stream()
@@ -178,6 +240,8 @@ public class PostServiceImpl implements PostService {
 
         return null;
     }
+
+
 
     @Override
     public void delete(UUID id) throws IOException {

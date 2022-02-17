@@ -28,7 +28,7 @@ public class PostController {
     private final PostService postService;
     private final ConverterPostDto converterPostDto;
 
-    //TODO: NEW POST (logged)
+
     @PostMapping("/")
     public ResponseEntity<PostDto> createPost(@RequestPart("file")MultipartFile file,
                                               @RequestPart("body")CreatePostDto newPost,
@@ -43,7 +43,17 @@ public class PostController {
     }
 
     //TODO: EDIT POST (logged)
-    //TODO: DELETE POST (logged)
+    @PutMapping("/{id}")
+    public ResponseEntity<PostDto> editPost(@PathVariable UUID id,
+                                            @RequestPart("file") MultipartFile file,
+                                            @RequestPart("body") CreatePostDto editPost,
+                                            @AuthenticationPrincipal UserEntity currentUser) throws Exception {
+
+        Post postEdited = postService.editPost(id, file, currentUser, editPost);
+
+        return ResponseEntity.ok().body(converterPostDto.convertPostToPostDto(postEdited));
+
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable UUID id) throws IOException {
@@ -65,7 +75,6 @@ public class PostController {
                 .collect(Collectors.toList());
 
     }
-    //TODO: GET ONE POST
 
     @GetMapping("/{id}")
     public PostDto getOnePost(@PathVariable UUID id,@AuthenticationPrincipal UserEntity currentUser){
@@ -74,7 +83,6 @@ public class PostController {
         return converterPostDto.convertPostToPostDto(foundPost);
 
     }
-    //TODO: GET SOMEONE'S POST
     @GetMapping("/all/{username}")
     public List<PostDto> getUsersPost(@PathVariable String username, @AuthenticationPrincipal UserEntity currentUser){
 
@@ -85,7 +93,6 @@ public class PostController {
 
     }
 
-    //TODO: GET MY POSTS (logged)
     @GetMapping("/me")
     public List<PostDto> getMyPosts(@AuthenticationPrincipal UserEntity currentUser){
 
