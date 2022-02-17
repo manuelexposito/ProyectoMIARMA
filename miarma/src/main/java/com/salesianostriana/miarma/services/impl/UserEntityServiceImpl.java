@@ -1,9 +1,16 @@
 package com.salesianostriana.miarma.services.impl;
 
+import com.salesianostriana.miarma.errors.exceptions.entitynotfound.EntityNotFoundException;
+import com.salesianostriana.miarma.errors.exceptions.entitynotfound.SingleEntityNotFoundException;
+import com.salesianostriana.miarma.errors.exceptions.following.PrivateProfileException;
+import com.salesianostriana.miarma.models.follow.Follow;
+import com.salesianostriana.miarma.models.user.dto.UserDto;
 import com.salesianostriana.miarma.models.user.role.UserRole;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.models.user.dto.CreateUserDto;
+import com.salesianostriana.miarma.repositories.FollowRepository;
 import com.salesianostriana.miarma.repositories.UserEntityRepository;
+import com.salesianostriana.miarma.services.FollowService;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +38,7 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
     private final UserEntityRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final StorageService storageService;
+    private final FollowRepository followRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -87,7 +95,7 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
     }
 
     @Override
-    public List<UserEntity> saveAll(List<UserEntity> list){
+    public List<UserEntity> saveAll(List<UserEntity> list) {
 
         return repository.saveAll(list);
     }
@@ -95,6 +103,37 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
     @Override
     public UserEntity save(UserEntity userEntity) {
         return repository.save(userEntity);
+    }
+
+    @Override
+    public UserEntity getUserProfile(UUID id, UserEntity currentUser) {
+
+
+        Optional<UserEntity> user = repository.findById(id);
+
+        if (user.isPresent()) {
+
+            UserEntity foundUser = user.get();
+
+            //Si la cuenta es pública, podremos verla.
+            //Si la cuenta es privada, hay que comprobar si estamos dentro de sus REQUESTS y
+            //está ACEPTADA. De no ser así, no se podrá ver.
+            Optional<Follow> followReq = followRepository.findFollowByMultipleId(id, currentUser.getId());
+            if (!foundUser.isPrivate() ||
+                    foundUser.isPrivate() && followReq.isPresent() && followReq.get().isAccepted()) {
+
+                return foundUser;
+
+            } else {
+                throw new PrivateProfileException("No puedes ver este perfil porque es privado. Envía una solicitud de seguimiento y, si te acepta, podrás ver sus publicaciones.");
+            }
+
+
+        } else {
+            throw new SingleEntityNotFoundException(UserEntity.class);
+        }
+
+
     }
 
     @Override
