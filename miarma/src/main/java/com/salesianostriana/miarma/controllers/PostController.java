@@ -86,5 +86,11 @@ public class PostController {
     }
 
     //TODO: GET MY POSTS (logged)
+    @GetMapping("/me")
+    public List<PostDto> getMyPosts(@AuthenticationPrincipal UserEntity currentUser){
+
+        return postService.getMyPosts(currentUser).stream().map(converterPostDto::convertPostToPostDto).collect(Collectors.toList());
+
+    }
 
 }
