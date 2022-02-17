@@ -91,4 +91,14 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
 
         return repository.saveAll(list);
     }
+
+    @Override
+    public UserEntity save(UserEntity userEntity) {
+        return repository.save(userEntity);
+    }
+
+    @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return repository.findFirstByUsername(username);
+    }
 }

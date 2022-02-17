@@ -1,5 +1,7 @@
 package com.salesianostriana.miarma.models.follow;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import lombok.*;
 
@@ -20,11 +22,18 @@ public class Follow implements Serializable {
     @ManyToOne
     @MapsId("userFollowed")
     @JoinColumn(name = "followed_id")
+    @JsonIgnore
     private UserEntity userFollowed;
+
 
     @ManyToOne
     @MapsId("userFollowing")
     @JoinColumn(name = "following_id")
+    @JsonIgnore
     private UserEntity userFollowing;
+
+    private boolean isAccepted;
+
+
 
 }
