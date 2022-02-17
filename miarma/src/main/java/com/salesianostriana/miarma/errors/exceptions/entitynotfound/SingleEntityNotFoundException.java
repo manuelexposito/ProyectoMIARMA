@@ -9,4 +9,5 @@ public class SingleEntityNotFoundException extends EntityNotFoundException{
     public SingleEntityNotFoundException(Class clase) {
         super(String.format("No se ha podido encontrar el elemento del tipo %s",clase));
     }
+
 }

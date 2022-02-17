@@ -1,7 +1,10 @@
 package com.salesianostriana.miarma;
 
+import com.salesianostriana.miarma.models.follow.Follow;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.models.user.role.UserRole;
+import com.salesianostriana.miarma.repositories.FollowRepository;
+import com.salesianostriana.miarma.services.FollowService;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,8 +18,8 @@ import java.util.List;
 public class InitData {
 
     public final UserEntityService userService;
-
-
+    public final FollowService followService;
+    public final FollowRepository followRepository;
     @PostConstruct
     public void initData(){
         //TODO: Hacer una imagen default para los que no escogen foto
@@ -74,6 +77,10 @@ public class InitData {
         );
 
         userService.saveAll(users);
+
+        Follow follow = followService.sendRequest(users.get(1), "nerevelaz1982");
+        userService.save(users.get(1));
+        followRepository.save(follow);
 
     }
 

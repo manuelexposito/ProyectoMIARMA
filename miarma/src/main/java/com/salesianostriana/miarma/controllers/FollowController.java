@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/follow")
@@ -33,4 +34,14 @@ public class FollowController {
         return followService.getPetitionsList(currentUser);
 
     }
+
+    @PostMapping("/accept/{id}")
+    public ResponseEntity<?> acceptFollowRequest(@PathVariable("id")UUID id, @AuthenticationPrincipal UserEntity currentUser){
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(followService.save(id, currentUser));
+
+
+    }
+
+
 }

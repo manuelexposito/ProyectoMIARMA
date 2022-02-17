@@ -7,6 +7,7 @@ import com.salesianostriana.miarma.models.user.UserEntity;
 
 import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
+import java.util.UUID;
 
 public interface FollowService {
 
@@ -15,7 +16,7 @@ public interface FollowService {
 
     List<Follow> getPetitionsList(UserEntity currentUser);
 
-    Follow save(Follow request, UserEntity currentUser);
+    Follow save(UUID followerId, UserEntity currentUser);
 
     void delete(FollowPK id);
 

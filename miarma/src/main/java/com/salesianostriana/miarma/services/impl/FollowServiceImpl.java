@@ -1,5 +1,6 @@
 package com.salesianostriana.miarma.services.impl;
 
+import com.salesianostriana.miarma.errors.exceptions.entitynotfound.EntityNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.entitynotfound.ListEntityNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.entitynotfound.SingleEntityNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.following.FollowingSelfException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -63,13 +65,20 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public Follow save(Follow followRequest, UserEntity currentUser) {
+    public Follow save(UUID followerId, UserEntity currentUser) {
 
-        followRequest = Follow.builder()
-                .isAccepted(true)
-                .build();
+        Optional<Follow> follower = followRepository.findFollowByMultipleId(currentUser.getId(), followerId);
+        Follow followRequest;
 
-        return followRepository.save(followRequest);
+        if(follower.isPresent() ){
+            followRequest = follower.get();
+            followRequest.setAccepted(true);
+            return followRepository.save(followRequest);
+
+        } else{
+            throw new EntityNotFoundException("No pudo encontrase ninguna petición con ese usuario.");
+        }
+
     }
 
 
