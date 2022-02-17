@@ -1,7 +1,6 @@
 package com.salesianostriana.miarma.errors;
 
 import com.salesianostriana.miarma.errors.exceptions.entitynotfound.EntityNotFoundException;
-import com.salesianostriana.miarma.errors.exceptions.following.RequestAlreadySentException;
 import com.salesianostriana.miarma.errors.exceptions.storage.WrongFormatException;
 import com.salesianostriana.miarma.errors.model.ApiError;
 import com.salesianostriana.miarma.errors.model.ApiSubError;
@@ -19,6 +18,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.persistence.EntityExistsException;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,10 +106,10 @@ public class GlobalRestAdviceController extends ResponseEntityExceptionHandler {
 
     }
 
-    @ExceptionHandler({RequestAlreadySentException.class})
-    public ResponseEntity<?> handleRequestAlreadySentException(RequestAlreadySentException e, WebRequest request){
+    @ExceptionHandler({EntityExistsException.class})
+    public ResponseEntity<?> handleRequestAlreadySentException(EntityExistsException e, WebRequest request){
 
-        return buildApiError(e, HttpStatus.resolve(409), request);
+        return buildApiError(e,"La petición aún está por confirmarse" ,HttpStatus.resolve(409), request);
 
     }
 
@@ -146,6 +146,18 @@ public class GlobalRestAdviceController extends ResponseEntityExceptionHandler {
                 .codigo(status.value())
                 .ruta(((ServletWebRequest) request).getRequest().getRequestURI())
                 .mensaje(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    private ResponseEntity<Object> buildApiError(Exception exception, String customMessage ,HttpStatus status, WebRequest request) {
+
+        ApiError error = ApiError.builder()
+                .estado(status)
+                .codigo(status.value())
+                .ruta(((ServletWebRequest) request).getRequest().getRequestURI())
+                .mensaje(customMessage)
                 .build();
 
         return ResponseEntity.status(status).body(error);

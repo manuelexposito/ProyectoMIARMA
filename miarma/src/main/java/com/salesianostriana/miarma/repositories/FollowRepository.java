@@ -13,13 +13,12 @@ import java.util.UUID;
 public interface FollowRepository extends JpaRepository<Follow, FollowPK> {
 
 
-    @Query("""
-            SELECT f
+    @Query(value = """
+            SELECT *
             FROM Follow f
-            WHERE f.userFollowed.id = :id1
-            AND f.userFollowing.id = :id2
-            """)
-    Optional<Follow> findFollowByMultipleId(@Param("id1") UUID idFollowed, @Param("id2") UUID idFollowing);
+            WHERE f.followed_id = :id1
+            """, nativeQuery = true)
+    List<Follow> findFollowByRequestedId(@Param("id1") UUID idFollowed);
 
 
 }

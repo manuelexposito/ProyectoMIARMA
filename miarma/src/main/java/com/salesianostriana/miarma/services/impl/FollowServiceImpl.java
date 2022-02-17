@@ -1,19 +1,15 @@
 package com.salesianostriana.miarma.services.impl;
 
 import com.salesianostriana.miarma.errors.exceptions.entitynotfound.SingleEntityNotFoundException;
-import com.salesianostriana.miarma.errors.exceptions.following.RequestAlreadySentException;
 import com.salesianostriana.miarma.models.follow.Follow;
 import com.salesianostriana.miarma.models.follow.FollowPK;
-import com.salesianostriana.miarma.models.follow.RequestStatus;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.repositories.FollowRepository;
-import com.salesianostriana.miarma.repositories.UserEntityRepository;
 import com.salesianostriana.miarma.services.FollowService;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.attribute.UserPrincipal;
 import java.util.Optional;
 
 @Service
@@ -24,55 +20,49 @@ public class FollowServiceImpl implements FollowService {
     private final UserEntityService userService;
 
     @Override
-    public Follow sendRequest(UserEntity currentUser, String username) {
+    public Follow sendRequest(UserEntity currentUser, String username){
 
         Optional<UserEntity> userRequested = userService.findByUsername(username);
         UserEntity foundUser = new UserEntity();
-        Follow followRequest = new Follow();
-        Optional<Follow> optionalFollow = Optional.empty();
 
-        //Optional<Follow> optionalFollow = followRepository.findById(id);
+        Follow followRequest = Follow.builder()
+                .userFollowing(currentUser)
+                .build();
+
 
         //Buscamos al usuario, y setea los IDs si lo encuentra
         if (userRequested.isPresent()){
             foundUser = userRequested.get();
+            followRequest.setUserFollowed(foundUser);
 
         } else{
             throw new SingleEntityNotFoundException(UserEntity.class);
         }
 
         //Buscamos si existe esta relación FOLLOW
-        optionalFollow = followRepository.findFollowByMultipleId(foundUser.getId(), currentUser.getId());
-        //Si la peticion no existe, la creamos y la dejamos en "pendiente"
-        if(optionalFollow.isEmpty()){
 
-            followRequest = Follow.builder()
-                    .userFollowed(foundUser)
-                    .userFollowing(currentUser)
-                    .requestStatus(RequestStatus.PENDING)
-                    .build();
+
+
+        //Si la peticion no existe, la creamos y la dejamos en "pendiente" seteandola en FALSE
+        if(!foundUser.getRequests().contains(followRequest)){
+
+            followRequest.setAccepted(false);
             foundUser.getRequests().add(followRequest);
+            followRepository.save(followRequest);
             userService.save(foundUser);
 
-        //Si existe y además ha sido rechazada, damos la posibilidad de volverla a enviar seteando el estado en "pendiente"
-        } else if (optionalFollow.isPresent()
-                && optionalFollow.get().getRequestStatus().equals(RequestStatus.REJECTED)){
-            followRequest = optionalFollow.get();
-            followRequest.setRequestStatus(RequestStatus.PENDING);
 
-        } else{
-            throw new RequestAlreadySentException("Esta petición aún falta por confirmarse.");
         }
+        //Dará un error CONFLICT 409 en caso de que la petición existe
 
-
-        return followRepository.save(followRequest);
+        return followRequest;
     }
 
     @Override
     public Follow save(Follow followRequest, UserEntity currentUser) {
 
         followRequest = Follow.builder()
-                .requestStatus(RequestStatus.ACCEPTED)
+                .isAccepted(true)
                 .build();
 
         return followRepository.save(followRequest);
