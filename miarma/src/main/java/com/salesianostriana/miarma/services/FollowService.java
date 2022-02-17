@@ -18,6 +18,6 @@ public interface FollowService {
 
     Follow save(UUID followerId, UserEntity currentUser);
 
-    void delete(FollowPK id);
+    void delete(UUID followerId, UserEntity currentUser);
 
 }
