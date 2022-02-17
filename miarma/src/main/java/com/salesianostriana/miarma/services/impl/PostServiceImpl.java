@@ -106,6 +106,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> getPublicPosts() {
+
+        return postRepository.findAll().stream().filter(post -> !post.isNotVisible()).collect(Collectors.toList());
+
+    }
+
+    @Override
     public void delete(UUID id) throws IOException {
 
         try {

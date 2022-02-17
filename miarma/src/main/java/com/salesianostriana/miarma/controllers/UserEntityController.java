@@ -30,7 +30,7 @@ public class UserEntityController {
         return userDtoConverter.convertUserEntityToGetUserDto(saved);
     }
 
-    //TODO: GET ONE USER PROFILE
+
     @GetMapping("/profile/{id}")
     public UserDto getUserProfile(@PathVariable UUID id, @AuthenticationPrincipal UserEntity currentUser){
 
