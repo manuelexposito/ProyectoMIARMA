@@ -26,4 +26,6 @@ public interface UserEntityService{
 
     Optional<UserEntity> findById(UUID id);
 
+    List<UserEntity> findAllUsers();
+
 }

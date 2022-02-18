@@ -5,6 +5,7 @@ import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.models.user.role.UserRole;
 import com.salesianostriana.miarma.repositories.FollowRepository;
 import com.salesianostriana.miarma.services.FollowService;
+import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ public class InitData {
     public final UserEntityService userService;
     public final FollowService followService;
     public final FollowRepository followRepository;
+
     @PostConstruct
     public void initData(){
         //TODO: Hacer una imagen default para los que no escogen foto

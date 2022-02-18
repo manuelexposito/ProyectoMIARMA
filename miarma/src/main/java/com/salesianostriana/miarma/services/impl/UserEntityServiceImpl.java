@@ -184,4 +184,12 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
     public Optional<UserEntity> findByUsername(String username) {
         return repository.findFirstByUsername(username);
     }
+
+    //Método exclusivo para una rápida corrección en postman:
+    @Override
+    public List<UserEntity> findAllUsers(){
+        return repository.findAll();
+    }
+
+
 }

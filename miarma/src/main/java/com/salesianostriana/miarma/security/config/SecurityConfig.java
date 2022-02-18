@@ -56,6 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/profile/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/post/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/follow/**").authenticated()
+
+                //Antmatcher para mostrar todos los usuarios y poder coger un id en postman
+                .antMatchers(HttpMethod.GET, "/allUsers").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated();
 

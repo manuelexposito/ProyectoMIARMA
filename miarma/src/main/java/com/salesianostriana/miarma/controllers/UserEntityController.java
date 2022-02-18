@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,7 +43,7 @@ public class UserEntityController {
 
     }
 
-    //TODO: EDIT MY PROFILE
+
     @PutMapping("/profile/me")
     public UserDto editMyProfile(@Valid @RequestPart("body") CreateUserDto editUser,
                                  @RequestPart("file") MultipartFile file,
@@ -53,4 +55,12 @@ public class UserEntityController {
 
 
     }
+
+
+    //Método exclusivo para una rápida corrección en postman:
+    @GetMapping("/allUsers")
+    public List<UserDto> getAllUsers (){
+        return userEntityService.findAllUsers().stream().map(userDtoConverter::convertUserEntityToGetUserDto).collect(Collectors.toList());
+    }
+
 }

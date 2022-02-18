@@ -39,7 +39,7 @@ public class CreateUserDto {
     private boolean isPrivate = false;
 
 
-    @StrongPassword(min = 4, max = 120, hasUpper = true, hasOther = true, hasNumber = true, hasLower = true, message = "{password.not.strong}")
+    @StrongPassword(min = 8, max = 120, hasUpper = true, hasOther = true, hasNumber = true, hasLower = true, message = "{password.not.strong}")
     private String password;
     private String password2;
 

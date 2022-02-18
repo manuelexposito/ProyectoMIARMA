@@ -1,0 +1,726 @@
+{
+	"info": {
+		"_postman_id": "5aa0e390-1984-4b21-8e03-41689ad4f11b",
+		"name": "MIARMA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "REGISTRO / LOGIN",
+			"item": [
+				{
+					"name": "getAllUsers (para tomar un id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"\r",
+									"if(jsonData.length > 0) {\r",
+									"pm.collectionVariables.set(\"first_id\", jsonData[0].id);\r",
+									"pm.collectionVariables.set(\"first_username\", jsonData[0].username);\r",
+									"pm.collectionVariables.set(\"second_id\", jsonData[1].id);\r",
+									"pm.collectionVariables.set(\"second_username\", jsonData[1].username);\r",
+									"pm.collectionVariables.set(\"third_id\", jsonData[2].id);\r",
+									"pm.collectionVariables.set(\"third_username\", jsonData[2].username);\r",
+									"pm.collectionVariables.set(\"fourth_id\", jsonData[3].id);\r",
+									"pm.collectionVariables.set(\"fourth_username\", jsonData[3].username);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/allUsers",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"allUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SIGN IN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "body",
+									"contentType": "application/json",
+									"type": "file",
+									"src": "/C:/Users/exposito.heman21/Documents/ReposProyectos/ProyectoMIARMA/miarma/src/main/resources/jsons/sign_in.json"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/exposito.heman21/Documents/ReposProyectos/ProyectoMIARMA/miarma/src/main/resources/mock_images/peanutbutter.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/register",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LOGIN",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"manuelexposito4d@gmail.com\",\r\n    \"password\" : \"MiSuperContraseña\"\r\n}\r\n/*\r\nCorreos loggeados para probar: \r\n            nere1982@gmail.com (publica) FIRST\r\n            ismaval@gmail.com(privada) SECOND\r\n            dariorive@gmail.com(privada) THIRD\r\n            carlotafariascorrea@gmail.com(publica) FOURTH\r\n*/",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/auth/login",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ME",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"mi_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/me",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST",
+			"item": [
+				{
+					"name": "NEW POST",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"post_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "body",
+									"contentType": "application/json",
+									"type": "file",
+									"src": "/C:/Users/exposito.heman21/Documents/ReposProyectos/ProyectoMIARMA/miarma/src/main/resources/jsons/new_post.json"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/exposito.heman21/Documents/ReposProyectos/ProyectoMIARMA/miarma/src/main/resources/mock_images/gato3.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/post/",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EDIT POST",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "body",
+									"type": "file",
+									"src": "/E:/Documentos/DAM/Proyectos/ProyectoMIARMA/miarma/src/main/resources/jsons/edit_post.json"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/Documentos/DAM/Proyectos/ProyectoMIARMA/miarma/src/main/resources/mock_images/peanutbutter.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/post/{{post_id}}",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"{{post_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE POST",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/post/{{post_id}}",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"{{post_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL POSTS",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/post/public",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"public"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ONE POST",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/post/{{post_id}}",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"{{post_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET SOMEONE'S POSTS",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n\r\n/*\r\nCorreos loggeados para probar: \r\n            nerevelaz1982 (publica)\r\n            ismavalxXx(privada) \r\n            darive74(privada)\r\n            cafaco85(publica) (sigue a darive74)\r\n\r\n*/",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/post/all/{{first_username}}",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"all",
+								"{{first_username}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET MY POSTS",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/post/me",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"post",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "USERS",
+			"item": [
+				{
+					"name": "FOLLOW",
+					"item": [
+						{
+							"name": "SEND FOLLOW PETITION",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "/*\r\nCorreos loggeados para probar: \r\n            nerevelaz1982 (publica)\r\n            ismavalxXx(privada) \r\n            darive74(privada)\r\n            cafaco85(publica) (sigue a darive74)\r\n\r\n*/",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/follow/{{first_username}}",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"follow",
+										"{{first_username}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ACCEPT FOLLOW PETITION",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/follow/accept/{{first_follower}}",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"follow",
+										"accept",
+										"{{first_follower}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DECLINE FOLLOW PETITION",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/follow/decline/{{second_follower}}",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"follow",
+										"decline",
+										"{{second_follower}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PETITIONS LIST",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"if(jsonData.length > 0) {\r",
+											"pm.collectionVariables.set(\"first_follower\", jsonData[0].followPK.userFollowing);\r",
+											"pm.collectionVariables.set(\"second_follower\", jsonData[1].followPK.userFollowing);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/follow/list",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"follow",
+										"list"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GET ONE USER PROFILE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/profile/{{first_id}}",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"profile",
+								"{{first_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EDIT MY PROFILE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/Documentos/DAM/Proyectos/ProyectoMIARMA/miarma/src/main/resources/mock_images/gato.jpg"
+								},
+								{
+									"key": "body",
+									"type": "file",
+									"src": "/E:/Documentos/DAM/Proyectos/ProyectoMIARMA/miarma/src/main/resources/jsons/edit_profile.json"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/profile/me",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"profile",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_URL",
+			"value": "localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjMGE4MzgwMS03ZWVmLTE1NjQtODE3ZS1lZjM1N2U3YTAwMDAiLCJpYXQiOjE2NDQ3NzcyODAsImZ1bGxuYW1lIjoiTWFudWVsIEV4cG9zaXRvIEhlcnJlcmEiLCJyb2xlIjoiVVNFUl9ST0xFIn0.vbanDG2AiF9FFvMAs_9fG9_Nop6aat5IRdeaxivzYcxM8ikZLsts5amJxTqAZ64aRWPVc9usBZPMGO1Qb-uOVQ",
+			"type": "string"
+		},
+		{
+			"key": "first_id",
+			"value": ""
+		},
+		{
+			"key": "first_username",
+			"value": ""
+		},
+		{
+			"key": "second_id",
+			"value": ""
+		},
+		{
+			"key": "second_username",
+			"value": ""
+		},
+		{
+			"key": "third_id",
+			"value": ""
+		},
+		{
+			"key": "third_username",
+			"value": ""
+		},
+		{
+			"key": "fourth_id",
+			"value": ""
+		},
+		{
+			"key": "fourth_username",
+			"value": ""
+		},
+		{
+			"key": "mi_id",
+			"value": ""
+		},
+		{
+			"key": "first_follower",
+			"value": ""
+		},
+		{
+			"key": "second_follower",
+			"value": ""
+		},
+		{
+			"key": "post_id",
+			"value": ""
+		}
+	]
+}
