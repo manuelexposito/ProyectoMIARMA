@@ -25,7 +25,9 @@ public class CreateUserDto {
     @NotNull
     private String username;
 
-    private String avatar;
+    //TODO: Una imagen default para los usuarios que no escogen imagen
+    @Builder.Default
+    private String avatar = "";
 
     @NotEmpty
     @NotNull

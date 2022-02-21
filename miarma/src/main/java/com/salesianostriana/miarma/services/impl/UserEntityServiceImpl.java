@@ -79,6 +79,7 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
                 .username(newUser.getUsername())
                 .fullName(newUser.getFullname())
                 .isPrivate(newUser.isPrivate())
+                .biography(newUser.getBiography())
                 .email(newUser.getEmail())
                 .role(UserRole.USER_ROLE)
                 .build();
