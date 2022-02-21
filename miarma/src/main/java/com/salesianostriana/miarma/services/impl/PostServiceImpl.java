@@ -10,6 +10,7 @@ import com.salesianostriana.miarma.models.post.dto.CreatePostDto;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.repositories.PostRepository;
 import com.salesianostriana.miarma.repositories.UserEntityRepository;
+import com.salesianostriana.miarma.services.ImageScaler;
 import com.salesianostriana.miarma.services.PostService;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.utils.mediatype.MediaTypeUrlResource;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +49,9 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final StorageService storageService;
     private final UserEntityRepository userRepository;
+    private final ImageScaler imageScaler;
+
+    //TODO: MEJORA DE CÓDIGO EN GENERAL!!!
 
     @Override
     public Post save(CreatePostDto post, MultipartFile file, UserEntity currentUser) throws Exception {
@@ -63,18 +68,20 @@ public class PostServiceImpl implements PostService {
         List<String> validImgFormat = List.of("png", "jpg", "jpeg");
         List<String> validVidFormat = List.of("avi", "mp4");
 
+        //TODO: Reescalada de vídeos
         if (validVidFormat.contains(ext)) {
 
-            videoBytes = storageService.resizeVideo(file, 400, 300, ext);
+  /*          videoBytes = storageService.resizeVideo(file, 400, 300, ext);
 
             resized = ImageIO.read(new ByteArrayInputStream(videoBytes));
 
             ImageIO.write(resized, ext, Files.newOutputStream(storageService.load(fileResized)));
             ImageIO.write(original, ext, Files.newOutputStream(storageService.load(filename)));
+*/
 
         } else if (validImgFormat.contains(ext)) {
 
-            resized = storageService.simpleResizeImage(original, 128);
+            resized = imageScaler.simpleResizeImage(original, 128);
 
             ImageIO.write(resized, ext, Files.newOutputStream(storageService.load(fileResized)));
             ImageIO.write(original, ext, Files.newOutputStream(storageService.load(filename)));
@@ -84,17 +91,9 @@ public class PostServiceImpl implements PostService {
         }
 
 
-        String originalUri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path("/download/")
-                .path(filename)
-                .toUriString();
+        String originalUri = storageService.convertToUri(filename);
 
-        String resizedUri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path("/download/")
-                .path(fileResized)
-                .toUriString();
+        String resizedUri = storageService.convertToUri(fileResized);
 
         Post newPost = Post.builder()
                 .file(originalUri)
@@ -120,7 +119,7 @@ public class PostServiceImpl implements PostService {
 
         Optional<Post> post = postRepository.findById(id);
 
-        if(post.isPresent()){
+        if (post.isPresent()) {
 
             Post foundPost = post.get();
             originalUri = foundPost.getFile();
@@ -134,7 +133,7 @@ public class PostServiceImpl implements PostService {
                     .resizedFile(resizedUri)
                     .build();
 
-            if(!file.isEmpty()){
+            if (!file.isEmpty()) {
                 storageService.deleteFile(post.get().getFile());
 
                 filename = storageService.store(file);
@@ -142,29 +141,22 @@ public class PostServiceImpl implements PostService {
                 fileResized = filename.replace("." + ext, "") + "-resize." + ext;
                 original = ImageIO.read(file.getInputStream());
 
-                resized = storageService.simpleResizeImage(original, 128);
+                resized = imageScaler.simpleResizeImage(original, 128);
 
                 ImageIO.write(resized, ext, Files.newOutputStream(storageService.load(fileResized)));
                 ImageIO.write(original, ext, Files.newOutputStream(storageService.load(filename)));
 
-                originalUri = ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/download/")
-                        .path(filename)
-                        .toUriString();
+                originalUri = storageService.convertToUri(filename);
 
-                resizedUri = ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/download/")
-                        .path(fileResized)
-                        .toUriString();
+                resizedUri = storageService.convertToUri(fileResized);
 
                 foundPost.setFile(originalUri);
                 foundPost.setResizedFile(resizedUri);
             }
 
             return postRepository.save(foundPost);
-        } throw new EntityNotFoundException("No se encontró la publicación");
+        }
+        throw new EntityNotFoundException("No se encontró la publicación");
 
 
     }
@@ -183,19 +175,17 @@ public class PostServiceImpl implements PostService {
 
         Optional<UserEntity> user = userRepository.findFirstByUsername(username);
 
-        if(user.isPresent()){
+        if (user.isPresent()) {
 
             UserEntity foundUser = user.get();
             Optional<Follow> optFollow = foundUser.getRequests().stream()
                     .filter(f -> f.getUserFollowing().equals(currentUser)).findFirst();
 
-            if(foundUser.isPrivate() && optFollow.isPresent() || !foundUser.isPrivate())
-            {
+            if (foundUser.isPrivate() && optFollow.isPresent() || !foundUser.isPrivate()) {
                 return postRepository.findAllPostByOwner(foundUser.getId());
 
-            } else throw new PrivateProfileException("No puede ver las publicaciones de este perfil porque es privado.");
-
-
+            } else
+                throw new PrivateProfileException("No puede ver las publicaciones de este perfil porque es privado.");
 
 
         } else throw new EntityNotFoundException("No se encontró al usuario");
@@ -213,33 +203,32 @@ public class PostServiceImpl implements PostService {
 
         Optional<Post> post = postRepository.findById(id);
 
-        if(post.isPresent()){
+        if (post.isPresent()) {
 
             Post foundPost = post.get();
             UserEntity owner = foundPost.getOwner();
-            Optional <Follow> relationship = owner.getRequests().stream()
+            Optional<Follow> relationship = owner.getRequests().stream()
                     .filter(follow -> follow.getUserFollowing() == currentUser).findFirst();
 
             //if(foundPost.isNotVisible() && relationship.isEmpty() || foundPost.isNotVisible() && !relationship.get().isAccepted()) throw new PrivateProfileException("No puedes ver este post porque pertenece a un perfil privado.");
 
-            if(foundPost.isNotVisible()){
+            if (foundPost.isNotVisible()) {
 
-                if (relationship.isEmpty() || !relationship.get().isAccepted()) throw new PrivateProfileException("No puedes ver este post porque pertenece a un perfil privado.");
+                if (relationship.isEmpty() || !relationship.get().isAccepted())
+                    throw new PrivateProfileException("No puedes ver este post porque pertenece a un perfil privado.");
 
                 if (relationship.get().isAccepted()) return foundPost;
 
-            } else{
+            } else {
 
                 return foundPost;
             }
-
 
 
         } else throw new EntityNotFoundException("No se encontró la publicación");
 
         return null;
     }
-
 
 
     @Override

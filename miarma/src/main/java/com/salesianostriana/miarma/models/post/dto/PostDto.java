@@ -16,7 +16,7 @@ import java.util.UUID;
 public class PostDto {
 
     private UUID id;
-    private String message,file, userFullName, username;
+    private String message,file, resizedFile, userFullName, username, userAvatar;
 
 
 }

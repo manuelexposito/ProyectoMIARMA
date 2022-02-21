@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.awt.image.BufferedImage;
@@ -166,22 +167,12 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public BufferedImage simpleResizeImage(BufferedImage originalImage, int targetWidth) throws Exception {
-
-        return Scalr.resize(originalImage, targetWidth);
-    }
-
-    @Override
-    public byte[] resizeVideo(MultipartFile file, int width, int height, String mimeFormat) throws IOException, VideoException {
-        IVCompressor compressor = new IVCompressor();
-        IVSize customRes = new IVSize();
-
-        customRes.setWidth(width);
-        customRes.setHeight(height);
-
-        return compressor.reduceVideoSizeWithCustomRes(file.getBytes(), VideoFormats.valueOf(mimeFormat.toUpperCase()), customRes);
-
-
+    public String convertToUri(String filename){
+        return ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/download/")
+                .path(filename)
+                .toUriString();
     }
 
 

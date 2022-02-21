@@ -46,8 +46,9 @@ public class Post implements Serializable {
 
     private String resizedFile;
 
+    @Builder.Default
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,6 +59,7 @@ public class Post implements Serializable {
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    private boolean isNotVisible;// !owner.isPrivate();
+
+    private boolean isNotVisible;
 
 }

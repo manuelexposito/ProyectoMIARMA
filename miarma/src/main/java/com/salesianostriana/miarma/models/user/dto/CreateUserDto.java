@@ -6,6 +6,7 @@ import com.salesianostriana.miarma.validation.annotations.FieldsValueMatch;
 import com.salesianostriana.miarma.validation.annotations.StrongPassword;
 import lombok.*;
 
+import javax.persistence.Lob;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -34,6 +35,9 @@ public class CreateUserDto {
 
     @Past
     private LocalDate birthdate;
+
+    @Lob
+    private String biography;
 
     @Builder.Default
     private boolean isPrivate = false;

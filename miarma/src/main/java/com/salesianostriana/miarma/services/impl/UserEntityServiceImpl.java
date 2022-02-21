@@ -11,6 +11,7 @@ import com.salesianostriana.miarma.models.user.dto.CreateUserDto;
 import com.salesianostriana.miarma.repositories.FollowRepository;
 import com.salesianostriana.miarma.repositories.UserEntityRepository;
 import com.salesianostriana.miarma.services.FollowService;
+import com.salesianostriana.miarma.services.ImageScaler;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
     private final PasswordEncoder passwordEncoder;
     private final StorageService storageService;
     private final FollowRepository followRepository;
+    private final ImageScaler imageScaler;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -59,17 +61,13 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
 
             BufferedImage originalImage = ImageIO.read(avatar.getInputStream());
 
-            BufferedImage resized = storageService.simpleResizeImage(originalImage, 128);
+            BufferedImage resized = imageScaler.simpleResizeImage(originalImage, 128);
 
             OutputStream out = Files.newOutputStream(storageService.load(filename));
 
             ImageIO.write(resized, ext, out);
 
-            uri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/download/")
-                    .path(filename)
-                    .toUriString();
+            uri = storageService.convertToUri(filename);
 
         }
 
@@ -105,6 +103,8 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
         return repository.save(userEntity);
     }
 
+
+    //TODO: Arreglar la privacidad
     @Override
     public UserEntity getUserProfile(UUID id, UserEntity currentUser) {
 
@@ -150,17 +150,13 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
 
             BufferedImage originalImage = ImageIO.read(avatar.getInputStream());
 
-            BufferedImage resized = storageService.simpleResizeImage(originalImage, 128);
+            BufferedImage resized = imageScaler.simpleResizeImage(originalImage, 128);
 
             OutputStream out = Files.newOutputStream(storageService.load(filename));
 
             ImageIO.write(resized, ext, out);
 
-            uri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/download/")
-                    .path(filename)
-                    .toUriString();
+            uri = storageService.convertToUri(filename);
 
         }
 
