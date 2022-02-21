@@ -3,6 +3,8 @@ package com.salesianostriana.miarma.services;
 import com.salesianostriana.miarma.models.post.Post;
 import com.salesianostriana.miarma.models.post.dto.CreatePostDto;
 import com.salesianostriana.miarma.models.user.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -13,11 +15,11 @@ public interface PostService {
 
     Post save(CreatePostDto post, MultipartFile file, UserEntity currentUser) throws Exception;
 
-    List<Post> getPublicPosts();
+    Page<Post> getPublicPosts(Pageable pageable);
 
-    List<Post> getPostsByUsername(String username, UserEntity currentUser);
+    Page<Post> getPostsByUsername(String username, UserEntity currentUser, Pageable pageable);
 
-    List<Post> getMyPosts(UserEntity currentUser);
+    Page<Post> getMyPosts(UserEntity currentUser, Pageable pageable);
 
     Post getOnePost(UUID id, UserEntity currentUser);
 

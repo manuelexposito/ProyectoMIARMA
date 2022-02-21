@@ -7,14 +7,20 @@ import com.salesianostriana.miarma.models.post.dto.CreatePostDto;
 import com.salesianostriana.miarma.models.post.dto.PostDto;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.services.PostService;
+import com.salesianostriana.miarma.utils.pagination.PaginationLinksUtils;
 import io.github.techgnious.exception.VideoException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +33,7 @@ public class PostController {
 
     private final PostService postService;
     private final ConverterPostDto converterPostDto;
-
+    private final PaginationLinksUtils paginationLinksUtils;
 
     @PostMapping("/")
     public ResponseEntity<PostDto> createPost(@RequestPart("file")MultipartFile file,
@@ -65,17 +71,6 @@ public class PostController {
 
     }
 
-
-    @GetMapping("/public")
-    public List<PostDto> getPublicPosts(){
-
-        return postService.getPublicPosts()
-                .stream()
-                .map(converterPostDto::convertPostToPostDto)
-                .collect(Collectors.toList());
-
-    }
-
     @GetMapping("/{id}")
     public PostDto getOnePost(@PathVariable UUID id,@AuthenticationPrincipal UserEntity currentUser){
 
@@ -83,21 +78,48 @@ public class PostController {
         return converterPostDto.convertPostToPostDto(foundPost);
 
     }
-    @GetMapping("/all/{username}")
-    public List<PostDto> getUsersPost(@PathVariable String username, @AuthenticationPrincipal UserEntity currentUser){
 
-        return postService.getPostsByUsername(username, currentUser)
-                .stream().map(converterPostDto::convertPostToPostDto)
-                .collect(Collectors.toList());
+    @GetMapping("/public")
+    public ResponseEntity<Page<PostDto>> getPublicPosts(@PageableDefault() Pageable pageable, HttpServletRequest request){
+
+        Page<PostDto> posts = postService.getPublicPosts(pageable)
+                .map(converterPostDto::convertPostToPostDto);
+
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+
+        return ResponseEntity.ok().header("link",
+                        paginationLinksUtils.createLinkHeader(posts, uriBuilder))
+                .body(posts);
+
+    }
+
+
+    @GetMapping("/all/{username}")
+    public ResponseEntity<Page<PostDto>> getUsersPost(@PathVariable String username, @AuthenticationPrincipal UserEntity currentUser, Pageable pageable, HttpServletRequest request){
+
+        Page<PostDto> posts = postService.getPostsByUsername(username, currentUser, pageable)
+                .map(converterPostDto::convertPostToPostDto);
+
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+
+        return ResponseEntity.ok().header("link", paginationLinksUtils.createLinkHeader(posts, uriBuilder)).body(posts);
 
 
     }
 
     @GetMapping("/me")
-    public List<PostDto> getMyPosts(@AuthenticationPrincipal UserEntity currentUser){
+    public ResponseEntity<Page<PostDto>> getMyPosts(@AuthenticationPrincipal UserEntity currentUser, Pageable pageable, HttpServletRequest request){
 
-        return postService.getMyPosts(currentUser).stream().map(converterPostDto::convertPostToPostDto).collect(Collectors.toList());
+        Page<PostDto> posts = postService.getMyPosts(currentUser, pageable).map(converterPostDto::convertPostToPostDto);
+
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+
+        return ResponseEntity.ok().header("link", paginationLinksUtils.createLinkHeader(posts, uriBuilder)).body(posts);
 
     }
+
+
+
+
 
 }

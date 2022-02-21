@@ -20,6 +20,8 @@ import io.github.techgnious.dto.VideoFormats;
 import io.github.techgnious.exception.VideoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -162,16 +164,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getPublicPosts() {
+    public Page<Post> getPublicPosts(Pageable pageable) {
 
-        return postRepository.findAll().stream()
-                .filter(post -> !post.isNotVisible())
-                .collect(Collectors.toList());
+        return postRepository.findAll(pageable);
 
     }
 
     @Override
-    public List<Post> getPostsByUsername(String username, UserEntity currentUser) {
+    public Page<Post> getPostsByUsername(String username, UserEntity currentUser, Pageable pageable) {
 
         Optional<UserEntity> user = userRepository.findFirstByUsername(username);
 
@@ -182,7 +182,7 @@ public class PostServiceImpl implements PostService {
                     .filter(f -> f.getUserFollowing().equals(currentUser)).findFirst();
 
             if (foundUser.isPrivate() && optFollow.isPresent() || !foundUser.isPrivate()) {
-                return postRepository.findAllPostByOwner(foundUser.getId());
+                return postRepository.findAllPostByOwner(foundUser.getId(), pageable);
 
             } else
                 throw new PrivateProfileException("No puede ver las publicaciones de este perfil porque es privado.");
@@ -194,8 +194,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getMyPosts(UserEntity currentUser) {
-        return postRepository.findAllPostByOwner(currentUser.getId());
+    public Page<Post> getMyPosts(UserEntity currentUser, Pageable pageable) {
+        return postRepository.findAllPostByOwner(currentUser.getId(), pageable);
     }
 
     @Override

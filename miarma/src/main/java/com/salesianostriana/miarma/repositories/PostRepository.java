@@ -2,6 +2,8 @@ package com.salesianostriana.miarma.repositories;
 
 
 import com.salesianostriana.miarma.models.post.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +21,8 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
             JOIN User_Entity u on (u.id = p.user_id)
             WHERE p.user_id = :id
             """, nativeQuery = true)
-    List<Post> findAllPostByOwner(@Param("id") UUID id);
+    Page<Post> findAllPostByOwner(@Param("id") UUID id, Pageable pageable);
+
 
 
 }
