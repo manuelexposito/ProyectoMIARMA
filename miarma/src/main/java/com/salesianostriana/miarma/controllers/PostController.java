@@ -27,7 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 //TODO: Ver como conectar la api con flutter
-@CrossOrigin(origins = "http://localhost:58367/")
+//@CrossOrigin(origins = "http://localhost:58367/")
 @RestController
 @RequestMapping("/post")
 @RequiredArgsConstructor

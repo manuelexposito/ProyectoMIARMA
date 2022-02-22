@@ -57,6 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/post/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/follow/**").authenticated()
 
+                //Permitimos que todos puedan ver las imágenes para evitar problemas en Flutter
+                .antMatchers(HttpMethod.GET, "/download/**").permitAll()
                 //Antmatcher para mostrar todos los usuarios y poder coger un id en postman
                 .antMatchers(HttpMethod.GET, "/allUsers").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
