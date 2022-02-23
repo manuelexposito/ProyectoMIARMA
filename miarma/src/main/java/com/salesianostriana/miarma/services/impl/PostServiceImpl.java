@@ -13,6 +13,7 @@ import com.salesianostriana.miarma.repositories.UserEntityRepository;
 import com.salesianostriana.miarma.services.ImageScaler;
 import com.salesianostriana.miarma.services.PostService;
 import com.salesianostriana.miarma.services.StorageService;
+import com.salesianostriana.miarma.utils.Constants;
 import com.salesianostriana.miarma.utils.mediatype.MediaTypeUrlResource;
 import io.github.techgnious.IVCompressor;
 import io.github.techgnious.dto.IVSize;
@@ -93,9 +94,9 @@ public class PostServiceImpl implements PostService {
         }
 
 
-        String originalUri = storageService.convertToUri(filename);
+        String originalUri = convertToUri(filename);
 
-        String resizedUri = storageService.convertToUri(fileResized);
+        String resizedUri = convertToUri(fileResized);
 
         Post newPost = Post.builder()
                 .file(originalUri)
@@ -143,14 +144,14 @@ public class PostServiceImpl implements PostService {
                 fileResized = filename.replace("." + ext, "") + "-resize." + ext;
                 original = ImageIO.read(file.getInputStream());
 
-                resized = imageScaler.simpleResizeImage(original, 128);
+                resized = imageScaler.simpleResizeImage(original, Constants.SCALE_WIDTH);
 
                 ImageIO.write(resized, ext, Files.newOutputStream(storageService.load(fileResized)));
                 ImageIO.write(original, ext, Files.newOutputStream(storageService.load(filename)));
 
-                originalUri = storageService.convertToUri(filename);
+                originalUri = convertToUri(filename);
 
-                resizedUri = storageService.convertToUri(fileResized);
+                resizedUri = convertToUri(fileResized);
 
                 foundPost.setFile(originalUri);
                 foundPost.setResizedFile(resizedUri);
@@ -248,6 +249,16 @@ public class PostServiceImpl implements PostService {
 
 
     }
+
+
+    private String convertToUri(String filename){
+        return ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/download/")
+                .path(filename)
+                .toUriString();
+    }
+
 
 
 }

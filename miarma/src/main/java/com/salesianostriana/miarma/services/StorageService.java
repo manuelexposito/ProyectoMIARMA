@@ -26,7 +26,6 @@ public interface StorageService {
 
     void deleteAll();
 
-    String convertToUri(String filename);
 
 
 }

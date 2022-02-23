@@ -166,14 +166,6 @@ public class FileSystemStorageService implements StorageService {
 
     }
 
-    @Override
-    public String convertToUri(String filename){
-        return ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path("/download/")
-                .path(filename)
-                .toUriString();
-    }
 
 
 }

@@ -67,7 +67,7 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
 
             ImageIO.write(resized, ext, out);
 
-            uri = storageService.convertToUri(filename);
+            uri = convertToUri(filename);
 
         }
 
@@ -157,7 +157,7 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
 
             ImageIO.write(resized, ext, out);
 
-            uri = storageService.convertToUri(filename);
+            uri = convertToUri(filename);
 
         }
 
@@ -188,5 +188,12 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
         return repository.findAll();
     }
 
+    private String convertToUri(String filename){
+        return ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/download/")
+                .path(filename)
+                .toUriString();
+    }
 
 }
