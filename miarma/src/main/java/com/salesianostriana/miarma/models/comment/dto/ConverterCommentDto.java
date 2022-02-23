@@ -14,6 +14,8 @@ public class ConverterCommentDto {
                 .username(comment.getOwner().getUsername())
                 .userFullName(comment.getOwner().getFullName())
                 .message(comment.getMessage())
+                .createdAt(comment.getCreatedAt())
+                .isEdited(comment.isEdited())
                 .build();
 
     }

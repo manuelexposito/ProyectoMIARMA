@@ -33,6 +33,10 @@ public class Comment implements Serializable {
     private LocalDateTime createdAt;
 
     private String message;
+
+    @Builder.Default
+    private boolean isEdited = false;
+
     //private Long likes ?
 
 
