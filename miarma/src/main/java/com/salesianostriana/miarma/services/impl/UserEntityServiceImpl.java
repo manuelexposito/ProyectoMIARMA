@@ -1,16 +1,13 @@
 package com.salesianostriana.miarma.services.impl;
 
-import com.salesianostriana.miarma.errors.exceptions.entitynotfound.EntityNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.entitynotfound.SingleEntityNotFoundException;
 import com.salesianostriana.miarma.errors.exceptions.following.PrivateProfileException;
 import com.salesianostriana.miarma.models.follow.Follow;
-import com.salesianostriana.miarma.models.user.dto.UserDto;
 import com.salesianostriana.miarma.models.user.role.UserRole;
 import com.salesianostriana.miarma.models.user.UserEntity;
 import com.salesianostriana.miarma.models.user.dto.CreateUserDto;
 import com.salesianostriana.miarma.repositories.FollowRepository;
 import com.salesianostriana.miarma.repositories.UserEntityRepository;
-import com.salesianostriana.miarma.services.FollowService;
 import com.salesianostriana.miarma.services.ImageScaler;
 import com.salesianostriana.miarma.services.StorageService;
 import com.salesianostriana.miarma.services.UserEntityService;
@@ -25,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
@@ -77,7 +73,7 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
                 .avatar(uri)
                 .birthdate(newUser.getBirthdate())
                 .username(newUser.getUsername())
-                .fullName(newUser.getFullname())
+                .fullname(newUser.getFullname())
                 .isPrivate(newUser.isPrivate())
                 .biography(newUser.getBiography())
                 .email(newUser.getEmail())
@@ -168,7 +164,7 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
                 .avatar(uri)
                 .birthdate(edit.getBirthdate())
                 .username(edit.getUsername())
-                .fullName(edit.getFullname())
+                .fullname(edit.getFullname())
                 .isPrivate(edit.isPrivate())
                 .email(edit.getEmail())
                 .role(UserRole.USER_ROLE)

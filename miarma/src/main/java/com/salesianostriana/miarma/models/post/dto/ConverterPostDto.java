@@ -14,7 +14,7 @@ public class ConverterPostDto {
                 .file(post.getFile())
                 .resizedFile(post.getResizedFile())
                 .username(post.getOwner().getUsername())
-                .userFullName(post.getOwner().getFullName())
+                .userFullName(post.getOwner().getFullname())
                 .userAvatar(post.getOwner().getAvatar())
                 .build();
 

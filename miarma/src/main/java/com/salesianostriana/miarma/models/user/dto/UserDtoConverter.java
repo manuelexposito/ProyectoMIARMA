@@ -10,7 +10,7 @@ public class UserDtoConverter {
         return UserDto.builder()
                 .id(user.getId())
                 .avatar(user.getAvatar())
-                .fullName(user.getFullName())
+                .fullname(user.getFullname())
                 .username(user.getUsername())
                 .isPrivate(user.isPrivate())
                 .birthdate(user.getBirthdate())
