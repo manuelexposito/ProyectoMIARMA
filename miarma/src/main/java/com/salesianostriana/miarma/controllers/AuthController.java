@@ -57,7 +57,7 @@ public class AuthController {
 
     private JwtUserResponse convertUserToJwtUserResponse(UserEntity user, String jwt) {
         return JwtUserResponse.builder()
-                .fullName(user.getFullname())
+                .fullName(user.getFullName())
                 .email(user.getEmail())
                 .avatar(user.getAvatar())
                 .role(user.getRole().name())

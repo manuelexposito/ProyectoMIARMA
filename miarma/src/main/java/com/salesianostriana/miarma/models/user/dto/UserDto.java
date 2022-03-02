@@ -13,7 +13,7 @@ import java.util.UUID;
 public class UserDto {
 
     private UUID id;
-    private String avatar, username, fullname, email, role, biography;
+    private String avatar, username, fullName, email, role, biography;
     private boolean isPrivate;
 
     private LocalDate birthdate;

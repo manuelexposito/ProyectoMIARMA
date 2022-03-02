@@ -31,7 +31,7 @@ public class CreateUserDto {
 
     @NotEmpty
     @NotNull
-    private String fullname;
+    private String fullName;
     @Email
     private String email;
 

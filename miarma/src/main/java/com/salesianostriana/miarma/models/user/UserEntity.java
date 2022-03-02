@@ -65,7 +65,7 @@ public class UserEntity implements UserDetails, Serializable {
     @Past
     private LocalDate birthdate;
 
-    private String fullname;
+    private String fullName;
 
     private boolean isPrivate;
 
