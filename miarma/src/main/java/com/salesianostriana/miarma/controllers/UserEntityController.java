@@ -7,6 +7,7 @@ import com.salesianostriana.miarma.models.user.dto.UserDtoConverter;
 import com.salesianostriana.miarma.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +27,11 @@ public class UserEntityController {
 
 
     @PostMapping("/auth/register")
-    public UserDto signIn(@Valid @RequestPart("body") CreateUserDto newUser, @RequestPart("file") MultipartFile avatar) throws Exception {
+    public ResponseEntity<UserDto> signIn(@Valid @RequestPart("body") CreateUserDto newUser, @RequestPart("file") MultipartFile avatar) throws Exception {
 
         UserEntity saved = userEntityService.save(newUser, avatar);
 
-        return userDtoConverter.convertUserEntityToGetUserDto(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDtoConverter.convertUserEntityToGetUserDto(saved));
     }
 
 
