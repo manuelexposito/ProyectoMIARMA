@@ -14,13 +14,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:4200/")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -62,6 +60,7 @@ public class AuthController {
                 .avatar(user.getAvatar())
                 .role(user.getRole().name())
                 .token(jwt)
+                .isAdmin(user.isAdmin())
                 .build();
     }
 

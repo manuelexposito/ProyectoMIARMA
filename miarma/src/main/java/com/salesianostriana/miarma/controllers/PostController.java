@@ -10,6 +10,7 @@ import com.salesianostriana.miarma.services.PostService;
 import com.salesianostriana.miarma.utils.pagination.PaginationLinksUtils;
 import io.github.techgnious.exception.VideoException;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -62,12 +63,15 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable UUID id) throws IOException {
+    public ResponseEntity<?> deletePost(@PathVariable UUID id, @AuthenticationPrincipal UserEntity currentUser) throws IOException {
 
-        postService.delete(id);
+        if(currentUser.isAdmin()){
+            postService.delete(id);
 
-        return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build();
 
+        } else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
     }
 

@@ -14,5 +14,6 @@ public class JwtUserResponse {
     private String avatar;
     private String role;
     private String token;
+    private boolean isAdmin;
 
 }

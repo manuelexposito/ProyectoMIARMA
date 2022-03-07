@@ -69,6 +69,9 @@ public class UserEntity implements UserDetails, Serializable {
 
     private boolean isPrivate;
 
+    @Builder.Default
+    private boolean isAdmin = true;
+
     @Length(max = 250)
     private String biography;
 
