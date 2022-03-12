@@ -105,9 +105,12 @@ public class FollowServiceImpl implements FollowService {
     public List<Follow> getPetitionsList(UserEntity currentUser) {
 
         //Buscamos todas las peticiones que no hayan sido aceptadas todavía
-        return currentUser.getRequests().stream()
+
+        return followRepository.findRequestsNotAccepted(currentUser.getId());
+
+        /*return currentUser.getRequests().stream()
                 .filter(request -> !request.isAccepted())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
 
     }
 

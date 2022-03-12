@@ -75,7 +75,7 @@ public class UserEntity implements UserDetails, Serializable {
     private String avatar;
 
     //TODO: Solucionar el tipo de fetch con una query o entity graph para evitar el uso de EAGER.
-    @OneToMany(mappedBy = "userFollowed", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userFollowed", fetch = FetchType.LAZY)
     private List<Follow> requests = new ArrayList<>();
 
     @Builder.Default

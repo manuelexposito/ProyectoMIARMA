@@ -23,4 +23,7 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, UUID> {
 
     Optional<UserEntity> findFirstByEmail(String email);
 
+
+    List<Follow> findAllByRequests(@Param("userId") UserEntity userId);
+
 }

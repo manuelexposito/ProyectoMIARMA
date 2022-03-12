@@ -2,6 +2,7 @@ package com.salesianostriana.miarma.repositories;
 
 import com.salesianostriana.miarma.models.follow.Follow;
 import com.salesianostriana.miarma.models.follow.FollowPK;
+import com.salesianostriana.miarma.models.user.UserEntity;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,16 @@ public interface FollowRepository extends JpaRepository<Follow, FollowPK> {
             WHERE f.followed_id = :id1 AND f.following_id = :id2
             """, nativeQuery = true)
     Optional<Follow> findFollowByMultipleId(@Param("id1") UUID followedId, @Param("id2") UUID followingId);
+
+
+    @Query(value = """
+            SELECT *
+            FROM Follow f
+            WHERE f.followed_id = :userId
+            AND f.is_accepted = false
+            """, nativeQuery = true)
+    List<Follow> findRequestsNotAccepted(@Param("userId") UUID userId);
+
+
+
 }
